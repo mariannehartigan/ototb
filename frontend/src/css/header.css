@@ -1,0 +1,31 @@
+
+.headerContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    background: #b1e09c;
+    opacity: 0.6;
+    height: 100%;    
+}
+
+/* a grid in a grid in a grid */
+.headerSubContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-image: url("../assets/leaves.jpg");
+    opacity: .6;
+}
+
+
+.logo {
+    grid-column: span 1;
+    font-family: "Dekko", cursive;
+    font-size: 3vh;
+    padding: 0.5vh; /*3 + 2(1) = 4, which is grid-template-rows*/
+    color: #faffef;
+    font-weight: bold;
+}
+
+.loginStatus {
+    grid-column: span 1; 
+}
