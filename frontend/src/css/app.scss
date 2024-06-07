@@ -9,6 +9,7 @@
     grid-template-columns: 1fr 5fr 5fr 1fr;
     grid-template-rows: 4vh auto 8vh;
     min-height: 100vh;
+    background: #e6efd2;
 }
   
 .header {
@@ -16,12 +17,11 @@
 }
   
 .div1 {
-    background: #e6efd2;
+
     grid-column: 2/3;
 }
   
 .div2 {
-    background: #e6efd2;
 }
   
 img {
