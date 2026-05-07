@@ -9,6 +9,7 @@ Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/login', [LoginController::class, 'create']);
 Route::post('/login', [LoginController::class, 'store']);
+Route::delete('/logout', [LoginController::class, 'destroy']);
 
 Route::resource('/todo', TodoController::class)->only(['store', 'update', 'destroy']);
 Route::put('/reordertodos', [TodoController::class, 'reorder']);

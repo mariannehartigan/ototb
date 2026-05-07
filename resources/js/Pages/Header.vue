@@ -8,7 +8,7 @@
     <div v-if="user">
       Hello {{ user.name }}!
       &nbsp;&nbsp;
-      Sign Out
+      <Link href="/logout" method="delete" as="button">Sign Out</Link>
     </div>
     <div v-else>
       <Link href="/login">Sign in</Link>
