@@ -1,0 +1,10 @@
+.button {
+  border: 1px solid black;
+  padding: 0.4rem 1rem;
+  display: flex;
+  margin: 0 auto;
+}
+
+.button:hover {
+  background: #eeeeee;
+}

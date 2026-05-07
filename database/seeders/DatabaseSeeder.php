@@ -20,6 +20,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        User::factory()->create([
+            'name' => 'Test User 2',
+            'email' => 'vilt.test.inactive@gmail.com',
+        ]);        
+
         \App\Models\Category::insert([
           ['day' => 'Today'],
           ['day' => 'Tomorrow'],

@@ -1,0 +1,20 @@
+.link {
+  color: #2b4575;             
+  text-decoration: none;  
+  font-weight: 500;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: #5c95ff;
+}
+
+.link:focus-visible {
+  outline: 2px solid #2b4575;
+  outline-offset: 2px;
+}
+
+.link:active {
+  color: #1e40af;
+}

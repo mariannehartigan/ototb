@@ -1,0 +1,17 @@
+.auth-container {
+  position: fixed;
+  width: 30vw;
+  left: 35vw; /* (100 - width 30)/2, makes it centred */
+  margin-top: 7vh;
+  padding: 2vw;
+  border: 0.1vw solid #c2c2c2;
+}
+
+.auth-label {
+  width: 6vw;
+  display: inline-block;
+}
+
+.auth-input {
+  width: 16.5vw;
+}
