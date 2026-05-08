@@ -17,6 +17,7 @@ return new class extends Migration
 	          $table->boolean('completed')->nullable();
             $table->unsignedInteger('position')->default(0);
             $table->foreignIdFor(\App\Models\Category::class, 'category_id')->references('id')->on('categories'); 
+            $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
   public function index() {
     $categoriesWithTodos = Category::with(['todos' => function ($query) {
-      $query->orderBy('position');
+      $query->where('user_id', auth()->id())->orderBy('position');
     }])->get();
 
     return inertia('Home', [
