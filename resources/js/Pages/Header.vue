@@ -13,7 +13,7 @@
     <div v-else>
       <Link href="/login">Sign in</Link>
       &nbsp;&nbsp;
-      Create account
+      <Link href="/createaccount">Create account</Link>
     </div>
   </div>
 </template>
