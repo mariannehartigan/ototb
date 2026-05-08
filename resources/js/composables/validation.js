@@ -2,12 +2,29 @@ import { reactive, ref } from 'vue'
 
 export function useFormValidation() {
   const errors = reactive({
+    name: '',
+    email: '',
+    password: '',
     description: '',
   })
 
   const submitted = ref(false)
 
+  const isEmail = (value) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+
   const rules = {
+    name: [
+      (v) => (!v?.trim() ? 'Name is required' : ''),
+    ],
+    email: [
+      (v) => (!v?.trim() ? 'Email is required' : ''),
+      (v) => (!isEmail(v) ? 'Please enter a valid email' : ''),
+    ],
+    password: [
+      (v) => (!v?.trim() ? 'Password is required' : ''),
+      (v) => (v.length < 8 ? 'Password must be at least 8 characters' : ''),
+    ],
     description: [
       (v) => (!v?.trim() ? 'Description is required' : ''),
     ],

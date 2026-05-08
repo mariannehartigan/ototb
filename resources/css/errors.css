@@ -1,5 +1,6 @@
 .error {
   color: red;
+  height: 0.8vh;
   padding-top: 0.3vh;
   font-size: 0.7vw;
 }
