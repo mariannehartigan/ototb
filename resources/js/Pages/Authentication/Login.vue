@@ -28,7 +28,9 @@
         <div class="error">{{ errors.password }}{{ form.errors.password }}</div>
       </div>
 
-      <div class="pt-3 pb-3 text-sm link">Forgot Password?</div>
+      <div class="pt-3 pb-3 text-sm link">
+        <Link href="/forgotpassword">Forgot Password?</Link>
+      </div>
 
       <button type="submit" class="button">Sign in</button>
 
@@ -41,7 +43,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, Link, useForm } from '@inertiajs/vue3'
 import PasswordEye from './PasswordEye.vue';
 import { useFormValidation } from '../../composables/validation';
 
