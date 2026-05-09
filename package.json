@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.3.21",
+        "pinia": "^3.0.4",
         "vuedraggable": "^4.1.0"
     }
 }

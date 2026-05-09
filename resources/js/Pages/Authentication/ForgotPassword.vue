@@ -25,12 +25,13 @@
 
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import { useFormValidation } from '../../composables/validation';
+import { useFormValidation } from '../../composables/validation'
+import { useAuthStore } from '../../stores/authentication'
 
 const { errors, validateField, validateForm, clearError } = useFormValidation()
 
 const form = useForm({
-  email: '',
+  email: useAuthStore().email ?? '',
 })
 
 function submit() {

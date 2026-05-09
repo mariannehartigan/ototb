@@ -42,10 +42,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import PasswordEye from './PasswordEye.vue';
-import { useFormValidation } from '../../composables/validation';
+import { useFormValidation } from '../../composables/validation'
+import { useAuthStore } from '../../stores/authentication'
 
 const { errors, validateField, validateForm, clearError } = useFormValidation()
 
@@ -54,6 +55,11 @@ const showPassword = ref(false)
 const form = useForm({
   email: '',
   password: '',
+})
+
+const auth = useAuthStore()
+watch(() => form.email, (value) => {
+  auth.setEmail(value)
 })
 
 function login() {
