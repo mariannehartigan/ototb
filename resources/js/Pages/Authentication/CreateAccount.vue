@@ -42,7 +42,7 @@
 
       <button type="submit" class="button">Create Account</button>
 
-      <div class="pt-9">
+      <div class="pt-9 text-sm">
         Already have an account? <Link href="/login" class="link">Sign in</Link>
       </div>
     </form>

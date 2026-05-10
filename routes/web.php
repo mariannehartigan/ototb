@@ -6,7 +6,6 @@ use App\Http\Controllers\Authentication\LoginController;
 use App\Http\Controllers\Authentication\CreateAccountController;
 use App\Http\Controllers\Authentication\ForgotPasswordController;
 use App\Http\Controllers\Authentication\ResetPasswordController;
-use App\Http\Controllers\TodoController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -19,6 +18,3 @@ Route::get('/forgotpassword', [ForgotPasswordController::class, 'create']);
 Route::post('/forgotpassword', [ForgotPasswordController::class, 'store'])->name('password.reset');
 Route::get('/resetpassword/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
 Route::post('/resetpassword', [ResetPasswordController::class, 'store']);
-
-Route::resource('/todo', TodoController::class)->only(['store', 'update', 'destroy']);
-Route::put('/reordertodos', [TodoController::class, 'reorder']);

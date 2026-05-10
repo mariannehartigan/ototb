@@ -35,7 +35,7 @@
       <button type="submit" class="button">Sign in</button>
 
       <div class="pt-5 text-sm">
-        Haven't got an account? <span class="link">Create Account</span>
+        Haven't got an account? <Link href="/createaccount" class="link">Create Account</Link>
       </div>
     </form>
   </div>

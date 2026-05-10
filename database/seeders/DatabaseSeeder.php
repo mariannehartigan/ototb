@@ -25,23 +25,5 @@ class DatabaseSeeder extends Seeder
             'email' => 'vilt.test.inactive@gmail.com',
         ]);        
 
-        \App\Models\Category::insert([
-          ['day' => 'Today'],
-          ['day' => 'Tomorrow'],
-          ['day' => 'Next Week'],
-        ]);
-
-        \App\Models\Todo::factory(20)->create([
-          'user_id' => 1
-        ]);
-
-        \App\Models\Todo::factory(10)->create([
-          'user_id' => 2
-        ]);
-
-        \App\Models\ToDo::factory()->create([
-          'description' => 'Collect a leaf from Japan',
-          'user_id' => 1
-        ]);
     }
 }
