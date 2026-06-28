@@ -1,0 +1,40 @@
+.notloggedin-text {
+  position: fixed;
+  top: 31vh;
+  color: #6e8769;
+  font-size: 1.8vh;
+  font-family: Verdana;
+}
+
+.notloggedin-signin {
+  position: fixed;
+  left: 43vw;
+}
+.notloggedin-signin:hover {
+  color: #8f998a;
+}
+.notloggedin-signin:active {
+  transform: scale(0.97);
+}
+
+.notloggedin-createaccount {
+  position: fixed;
+  left: 51vw;
+}
+.notloggedin-createaccount:hover {
+  color: #8f998a;
+}
+.notloggedin-createaccount:active {
+  transform: scale(0.97);
+}
+
+.notloggedin-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #c9d0be;
+}
+.notloggedin-image img {
+  height: 50vh;
+}

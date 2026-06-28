@@ -3,20 +3,20 @@
   --footer-height: 8vh;
   --columns-height: calc(100vh - var(--header-height) - var(--footer-height));
 
-  --column1-width: 20vw;
+  --column1-width: 10vw;
   --column2-width: calc(100vw - var(--column1-width) - var(--column3-width));
-  --column3-width: 20vw;
+  --column3-width: 10vw;
 }
 
 .header {
-  background-color: #eeeeee;
+  background-color: #F1F8E9;
   height: var(--header-height);
   width: 100vw;
   position:fixed;
 }
 
 .column1 {
-  background-color: #dadada;
+  background-color: #DCEDC8;
   height: var(--columns-height);
   width: var(--column1-width);
   top: var(--header-height);
@@ -33,7 +33,7 @@
 }
 
 .column3 {
-  background-color: #dadada;
+  background-color: #DCEDC8;
   height: var(--columns-height);
   top: var(--header-height);
   width: var(--column3-width);
@@ -42,7 +42,7 @@
 }
 
 .footer {
-  background-color: #eeeeee;
+  background-color: #F1F8E9;
   height: var(--footer-height);
   width: 100vw;
   bottom: 0;

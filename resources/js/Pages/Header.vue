@@ -1,6 +1,7 @@
 <template>
   <div class="logo-container">
     <Link href="/">
+      <!-- <div class="logo">ON TOP OF THE BILLS</div> -->
       <img class="logo" src="../../../public/logo.png" />
     </Link>
   </div>
