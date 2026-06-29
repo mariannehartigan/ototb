@@ -21,9 +21,7 @@
     </div>
 
     <div class="column2">
-      <keep-alive>
         <component v-if="user" :is="activeTab.component" />
-      </keep-alive>
     </div>
 
     <div class="column3"></div>
@@ -73,5 +71,5 @@ const tabs = [
   },
 ]
 
-const activeTab = ref(tabs[0])
+const activeTab = ref(tabs[1])
 </script>
