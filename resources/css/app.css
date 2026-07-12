@@ -10,6 +10,7 @@
 @import 'buttons.css';
 @import 'links.css';
 @import 'password-eye.css';
+@import 'current.css';
 
 @tailwind base;
 @tailwind components;

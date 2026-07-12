@@ -36,10 +36,11 @@ import { Head, Link, usePage } from '@inertiajs/vue3'
 import Header from '../Pages/Header.vue'
 import NotLoggedIn from '../Pages/NotLoggedIn.vue'
 import Upcoming from './Upcoming/Upcoming.vue'
-import Current from './Current.vue'
+import Current from './Current/Current.vue'
 import History from './History.vue'
 import Assets from './Assets.vue'
 import Debts from './Debts.vue'
+import Settings from './Settings.vue'
 
 const user = computed(() => usePage().props.user)
 
@@ -68,6 +69,11 @@ const tabs = [
     id: 'debts',
     label: 'Debts',
     component: markRaw(Debts)
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    component: markRaw(Settings)
   },
 ]
 

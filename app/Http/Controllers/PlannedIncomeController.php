@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Income;
+use App\Models\PlannedIncome;
 
-class IncomeController extends Controller
+class PlannedIncomeController extends Controller
 {
     public function store(Request $request)
     {
-        //
+        //      
     }
 
-    public function update(Request $request, income $income)
+    public function update(Request $request, plannedIncome $income)
     {
         $income->update($request->all());
         return back();

@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'vilt.test.inactive@gmail.com',
         ]);
 
-        \App\Models\Income::insert([
+        \App\Models\PlannedIncome::insert([
           [
             'description'   => 'Hack the Box',
             'amount'        => 2457.64,
@@ -60,7 +60,184 @@ class DatabaseSeeder extends Seeder
             'frequency'     => 'monthly',
             'user_id'       => 1,
           ],                              
-        ]);     
+        ]);
 
+// used insert instead of create in case columns are added or removed
+        \App\Models\Setting::create([
+            'tithe'         => true,
+            'use_budget'    => true,
+            'budget_day_of_week'    => 'Friday',
+            'user_id'       => 1,
+        ]);
+
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Mortgage',
+            'amount'        => 1771.12,
+            'day_due'       => 31,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'House Insurance',
+            'amount'        => 159.46,
+            'day_due'       => 5,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Car Insurance',
+            'amount'        => 259.60,
+            'day_due'       => 5,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Property Tax',
+            'amount'        => 333.96,
+            'day_due'       => 15,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Hydro',
+            'amount'        => 315,
+            'day_due'       => 25,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => false,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Enbridge',
+            'amount'        => 80,
+            'day_due'       => 25,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => false,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Water',
+            'amount'        => 200,
+            'day_due'       => 25,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Bell',
+            'amount'        => 420,
+            'day_due'       => 20,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Allan giving',
+            'tithe'         => true,
+            'amount'        => 200,
+            'day_due'       => 31,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Holy Rosary',
+            'tithe'         => true,
+            'amount'        => 30,
+            'day_due'       => 1,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'St. Peter',
+            'tithe'         => true,
+            'amount'        => 110,
+            'day_due'       => 1,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'debit',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'St. Francis',
+            'tithe'         => true,
+            'amount'        => 35,
+            'day_due'       => 31,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'WM card',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'St. Joseph',
+            'tithe'         => true,
+            'amount'        => 20,
+            'day_due'       => 15,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'debit',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Netflix',
+            'amount'        => 27.11,
+            'day_due'       => 22,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'WM card',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'YouTube 1',
+            'amount'        => 25.98,
+            'day_due'       => 26,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'WM card',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'YouTube 2',
+            'amount'        => 14.68,
+            'day_due'       => 10,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'Triangle',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Spotify',
+            'amount'        => 23.72,
+            'day_due'       => 12,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from'  => 'WM card',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Loan interest',
+            'amount'        => 60,
+            'day_due'       => 20,
+            'frequency'     => 'monthly',
+            'automatic_payment'  => true,
+            'account_taken_from' => 'debit',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Gifts',
+            'amount'        => 630,
+            'frequency'     => 'monthly',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpense::create([
+            'description'   => 'Prescriptions',
+            'amount'        => 35,
+            'frequency'     => 'monthly',
+            'user_id'       => 1,
+        ]);      
     }
 }

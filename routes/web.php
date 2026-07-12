@@ -6,7 +6,9 @@ use App\Http\Controllers\Authentication\LoginController;
 use App\Http\Controllers\Authentication\CreateAccountController;
 use App\Http\Controllers\Authentication\ForgotPasswordController;
 use App\Http\Controllers\Authentication\ResetPasswordController;
+use App\Http\Controllers\PlannedIncomeController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ExpenseController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -20,4 +22,7 @@ Route::post('/forgotpassword', [ForgotPasswordController::class, 'store'])->name
 Route::get('/resetpassword/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
 Route::post('/resetpassword', [ResetPasswordController::class, 'store']);
 
+Route::resource('/plannedincome', PlannedIncomeController::class)->only(['store', 'update', 'destroy']);
 Route::resource('/income', IncomeController::class)->only(['store', 'update', 'destroy']);
+Route::resource('/expense', ExpenseController::class)->only(['store', 'update', 'destroy']);
+Route::put('/reorderexpenses', [ExpenseController::class, 'reorder']);
