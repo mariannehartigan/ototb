@@ -62,11 +62,87 @@ class DatabaseSeeder extends Seeder
           ],                              
         ]);
 
+        \App\Models\Budget::insert([
+          [
+            'description'   => 'Groceries',
+            'amount'        => 340,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Garbage tags',
+            'amount'        => 10,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Gas',
+            'amount'        => 85,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Allan',
+            'amount'        => 80,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Marianne',
+            'amount'        => 60,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Brianna',
+            'amount'        => 0,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Autumn',
+            'amount'        => 0,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Kristen',
+            'amount'        => 20,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Caragh',
+            'amount'        => 20,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Angelica',
+            'amount'        => 20,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Kids school',
+            'amount'        => 50,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],
+          [
+            'description'   => 'Mass',
+            'amount'        => 25,
+            'frequency'     => 'weekly',
+            'user_id'       => 1,
+          ],               
+        ]);
+
 // used insert instead of create in case columns are added or removed
         \App\Models\Setting::create([
             'tithe'         => true,
             'use_budget'    => true,
             'budget_day_of_week'    => 'Friday',
+            'budget_type'   => 'averaged',
             'user_id'       => 1,
         ]);
 

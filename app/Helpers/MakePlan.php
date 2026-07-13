@@ -6,7 +6,6 @@ use Carbon\Carbon;
 function makePlan(Carbon $date)
 {
     // POPULATE INCOME TABLE
-
     $month = $date->month;
     $monthName = $date->format('F');
     $year = $date->year;
@@ -24,9 +23,36 @@ function makePlan(Carbon $date)
         ]);
     }
 
+    // INSERT FUTURE BUDGET INTO BUDGET
+    $settings = App\Models\Setting::where('user_id', Auth::id())->first();
+
+    if ($settings && $settings->budget_type === 'averaged') {
+
+        $budgetConversionFactor = (364.75/(7*12)-4)/4;
+        // to find the extra weekly amount that has to be saved for 5-Fridays
+        // yields 0.0855654761904760
+        // 4.3423 weeks per month, 364.75/(7*12)
+        // subtract 4, so have to account for the extra 0.3423 weeks in a month
+        // divide by 4, each week has to account for 0.3423/4 = 0.08557 (there are 4 budgets in a month)
+
+        $futureBudgetWeeklySavings = App\Models\Budget::where('frequency', 'weekly')->sum('amount') * $budgetConversionFactor;
+
+        App\Models\Budget::firstOrCreate(
+            [
+                'description' => 'Future budget',
+                'frequency' => 'weekly',
+                'user_id' => Auth::id(),
+            ], [
+                'amount' => $futureBudgetWeeklySavings,
+            ]
+        );
+
+    // INSERT WEEKLY BUDGET TOTAL INTO EXPENSES
+        $totalWeeklyBudget = (App\Models\Budget::where('frequency', 'weekly')->sum('amount'));
+        
+    }
 
     // POPULATE EXPENSE TABLE
-
     $expenses = App\Models\PlannedExpense::where('user_id', Auth::id())->get();
 
     foreach ($expenses as $expense) {

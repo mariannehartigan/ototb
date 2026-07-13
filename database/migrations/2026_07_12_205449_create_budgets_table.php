@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('budgets', function (Blueprint $table) {
             $table->id();
-            $table->boolean('tithe')->default(true);
-            $table->boolean('use_budget')->default(false);
-            $table->string('budget_day_of_week')->nullable();
-            $table->string('budget_type')->nullable();
+            $table->text('description')->nullable();
+            $table->decimal('amount', 12, 2)->nullable();
+            $table->decimal('current_balance', 12, 2)->nullable();
+            $table->text('frequency')->nullable();
+            $table->unsignedInteger('position')->default(0);
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('budgets');
     }
 };
