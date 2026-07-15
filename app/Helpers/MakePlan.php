@@ -35,7 +35,7 @@ function makePlan(Carbon $date)
         // subtract 4, so have to account for the extra 0.3423 weeks in a month
         // divide by 4, each week has to account for 0.3423/4 = 0.08557 (there are 4 budgets in a month)
 
-        $futureBudgetWeeklySavings = App\Models\Budget::where('frequency', 'weekly')->sum('amount') * $budgetConversionFactor;
+        $futureBudget = App\Models\Budget::where('frequency', 'weekly')->sum('amount') * $budgetConversionFactor;
 
         App\Models\Budget::firstOrCreate(
             [
@@ -43,13 +43,47 @@ function makePlan(Carbon $date)
                 'frequency' => 'weekly',
                 'user_id' => Auth::id(),
             ], [
-                'amount' => $futureBudgetWeeklySavings,
+                'amount' => $futureBudget,
             ]
         );
 
-    // INSERT WEEKLY BUDGET TOTAL INTO EXPENSES
-        $totalWeeklyBudget = (App\Models\Budget::where('frequency', 'weekly')->sum('amount'));
+    // INSERT WEEKLY BUDGETS INTO EXPENSES
+        // find day_deposited first budget will be assigned to
+        $totalPlannedIncomes = App\Models\PlannedIncome::where('user_id', Auth::id())->sum('amount');
+        $orderedPlannedIncomes = App\Models\PlannedIncome::orderBy('day_deposited')->get();
+        $cumulative = 0;
+
+        $firstBudgetDayOfMonth = null;
+        foreach ($orderedPlannedIncomes as $plannedIncome) {
+            $cumulative += $plannedIncome->amount;
+            if ($cumulative >= $totalPlannedIncomes/4.3423) {
+                $firstBudgetDayOfMonth = $plannedIncome->day_deposited;
+                break; // no need to continue
+            }
+        }
         
+        // convert $firstBudgetDayOfMonth to $budgetDayOfWeek after paydate
+        $budgetDayOfWeek = App\Models\Setting::where('user_id', Auth::id())->value('budget_day_of_week');
+        $firstBudgetDate = Carbon::create($year, $month, $firstBudgetDayOfMonth);
+
+        while ($firstBudgetDate->format('l') !== $budgetDayOfWeek) {
+            $firstBudgetDate->addDay();
+        }
+            dd($firstBudgetDate);
+
+$budgetDate = $date->day;
+
+
+
+
+        $weeklyBudget = App\Models\Budget::where('user_id', Auth::id())->where('frequency', 'weekly')->sum('amount');
+
+
+
+
+
+
+
     }
 
     // POPULATE EXPENSE TABLE
