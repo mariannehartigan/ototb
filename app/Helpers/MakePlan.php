@@ -15,7 +15,7 @@ function makePlan(Carbon $date)
     foreach ($incomes as $income) {
         $day = min($income->day_deposited, $date->daysInMonth); // constrain to last day of month instead of 31st
         App\Models\Income::create([
-            'date' => Carbon::create($year, $month, $day),
+            'date' => Carbon::create($date->year, $date->month, $day),
             'description' => $income->description,
             'amount' => $income->amount,
             'remaining' => $income->amount,
@@ -36,10 +36,11 @@ function makePlan(Carbon $date)
         // divide by 4, each week has to account for 0.3423/4 = 0.08557 (there are 4 budgets in a month)
 
         $futureBudget = App\Models\Budget::where('frequency', 'weekly')->sum('amount') * $budgetConversionFactor;
+        $budgetDayOfWeek = App\Models\Setting::where('user_id', Auth::id())->value('budget_day_of_week');
 
         App\Models\Budget::firstOrCreate(
             [
-                'description' => 'Future budget',
+                'description' => '5-'.$budgetDayOfWeek,
                 'frequency' => 'weekly',
                 'user_id' => Auth::id(),
             ], [
@@ -62,16 +63,34 @@ function makePlan(Carbon $date)
             }
         }
         
-        // convert $firstBudgetDayOfMonth to $budgetDayOfWeek after paydate
+        // get date of first budget
         $budgetDayOfWeek = App\Models\Setting::where('user_id', Auth::id())->value('budget_day_of_week');
-        $firstBudgetDate = Carbon::create($year, $month, $firstBudgetDayOfMonth);
+        $firstBudgetDate = Carbon::create($date->year, $date->month, $firstBudgetDayOfMonth);
 
         while ($firstBudgetDate->format('l') !== $budgetDayOfWeek) {
             $firstBudgetDate->addDay();
         }
-            dd($firstBudgetDate);
 
-$budgetDate = $date->day;
+        // find out how many budgets would be in the lead month
+
+        $arrayOfBudgetDates = [];
+
+        $currentDateIteration = $firstBudgetDate->copy()->startOfMonth();
+
+        while ($date->month === $currentDateIteration->month) {
+            if ($currentDateIteration->format('l') === $budgetDayOfWeek) {
+                $arrayOfBudgetDates[] = $currentDateIteration->day;
+            }
+
+            $currentDateIteration->addDay();
+        }
+
+        $numberOfBudgetDays = count($arrayOfBudgetDates);
+
+        dd($date->month, $numberOfBudgetDays);
+
+        // 
+
 
 
 
@@ -94,8 +113,8 @@ $budgetDate = $date->day;
         $firstIncomeInMonth = App\Models\Income::where('user_id', Auth::id())->orderBy('date')->first();
         
         $expenseDate = Carbon::create(
-            $year,
-            $month,
+            $date->year,
+            $date->month,
             min($expense->day_due, $date->daysInMonth)
         );
 
