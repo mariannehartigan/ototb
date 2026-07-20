@@ -19,9 +19,17 @@ class HomeController extends Controller
     if (!isPlanGenerated()->currentMonth) { makePlan(Carbon::now()); }
     if (!isPlanGenerated()->nextMonth) { makePlan(Carbon::now()->addMonth()); }
 
-    $incomesWithExpenses = Income::with(['expenses' => function ($query) {
-      $query->orderBy('position');
-    }])->get();
+    // $incomesWithExpenses = Income::with(['expenses' => function ($query) {
+    //   $query->orderBy('position');
+    // }])->get();
+
+    $incomesWithExpenses = Income::with([
+      'expenses' => function ($query) {
+          $query->orderBy('position');
+      }
+    ])
+    ->orderBy('date', 'asc')
+    ->get();
 
     return inertia('Home', [
       'settings' => Setting::all(),

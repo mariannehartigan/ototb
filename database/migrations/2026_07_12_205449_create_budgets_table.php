@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('amount', 12, 2)->nullable();
             $table->decimal('current_balance', 12, 2)->nullable();
             $table->text('frequency')->nullable();
+            $table->text('date_available')->nullable();
             $table->unsignedInteger('position')->default(0);
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();

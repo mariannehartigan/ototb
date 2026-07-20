@@ -5,11 +5,7 @@ use Carbon\Carbon;
 
 function makePlan(Carbon $date)
 {
-    // POPULATE INCOME TABLE
-    $month = $date->month;
-    $monthName = $date->format('F');
-    $year = $date->year;
-
+    // POPULATE INCOME TABLE FROM PLANNED INCOMES
     $incomes = App\Models\PlannedIncome::where('user_id', Auth::id())->get();
 
     foreach ($incomes as $income) {
@@ -19,15 +15,15 @@ function makePlan(Carbon $date)
             'description' => $income->description,
             'amount' => $income->amount,
             'remaining' => $income->amount,
-            'user_id' => $income->user_id,
+            'user_id' => Auth::id(),
         ]);
     }
-
-    // INSERT FUTURE BUDGET INTO BUDGET
+    
+    // 5-BUDGET
     $settings = App\Models\Setting::where('user_id', Auth::id())->first();
-
     if ($settings && $settings->budget_type === 'averaged') {
 
+        // CREATE WEEKLY SAVINGS
         $budgetConversionFactor = (364.75/(7*12)-4)/4;
         // to find the extra weekly amount that has to be saved for 5-Fridays
         // yields 0.0855654761904760
@@ -45,10 +41,11 @@ function makePlan(Carbon $date)
                 'user_id' => Auth::id(),
             ], [
                 'amount' => $futureBudget,
+                'user_id' => Auth::id(),
             ]
         );
 
-    // INSERT WEEKLY BUDGETS INTO EXPENSES
+        // INSERT WEEKLY BUDGETS INTO EXPENSES
         // find day_deposited first budget will be assigned to
         $totalPlannedIncomes = App\Models\PlannedIncome::where('user_id', Auth::id())->sum('amount');
         $orderedPlannedIncomes = App\Models\PlannedIncome::orderBy('day_deposited')->get();
@@ -72,43 +69,57 @@ function makePlan(Carbon $date)
         }
 
         // find out how many budgets would be in the lead month
-
         $arrayOfBudgetDates = [];
-
         $currentDateIteration = $firstBudgetDate->copy()->startOfMonth();
 
         while ($date->month === $currentDateIteration->month) {
             if ($currentDateIteration->format('l') === $budgetDayOfWeek) {
                 $arrayOfBudgetDates[] = $currentDateIteration->day;
             }
-
             $currentDateIteration->addDay();
         }
-
         $numberOfBudgetDays = count($arrayOfBudgetDates);
 
-        dd($date->month, $numberOfBudgetDays);
+        // insert weekly budgets into expenses table
+        for ($i = 0; $i < $numberOfBudgetDays; $i++) {
+            $budgetDate = $firstBudgetDate->copy()->addDays($i * 7);
 
-        // 
+            App\Models\Expense::create([
+                'description' => 'Budget ' . $budgetDate->format('F j'),
+                'amount' => App\Models\Budget::where('user_id', Auth::id())
+                    ->where('frequency', 'weekly')
+                    ->sum('amount'),
+                'date' => $budgetDate,
+                'user_id' => Auth::id(),
+            ]);
+        }
+        // potential problem with duplicate dates for budget allocation
 
-
-
-
-
-        $weeklyBudget = App\Models\Budget::where('user_id', Auth::id())->where('frequency', 'weekly')->sum('amount');
-
-
-
-
-
-
-
-    }
+    } // end if weekly budget === 'averaged'
 
     // POPULATE EXPENSE TABLE
-    $expenses = App\Models\PlannedExpense::where('user_id', Auth::id())->get();
+    $plannedExpenses = App\Models\PlannedExpense::where('user_id', Auth::id())->get();
 
-    foreach ($expenses as $expense) {
+    $monthlyBudgets = App\Models\Budget::where('user_id', Auth::id())
+        ->where('frequency', 'monthly')
+        ->get()
+        ->map(function ($budget) {
+            $budget->date = Carbon::create(
+                now()->year,
+                now()->month,
+                $budget->date_available
+            );
+        $budget->day_due = $budget->date_available;
+            $budget->automatic_payment = false;
+            $budget->account_taken_from = 'debit';
+            $budget->notes = null;
+            $budget->tithe = false;
+            return $budget;
+        });
+
+    $combinedExpenses = $plannedExpenses->concat($monthlyBudgets);
+
+    foreach ($combinedExpenses as $expense) {
 
         $firstIncomeInMonth = App\Models\Income::where('user_id', Auth::id())->orderBy('date')->first();
         
@@ -124,20 +135,21 @@ function makePlan(Carbon $date)
 
         $incomes = App\Models\Income::orderBy('remaining', 'desc')->get();
         foreach ($incomes as $income) {
-            if ($income->day <= $expense['day_due']) {
+            if ($income->date->day <= $expense['day_due']) {
                 App\Models\Expense::create([
                     'date' => $expenseDate,
-                    'description' => $expense['description'],
-                    'amount' => $expense['amount'],
-                    'automatic_payment' => $expense['automatic_payment'],
-                    'account_taken_from' => $expense['account_taken_from'],
+                    'description' => $expense->description,
+                    'amount' => $expense->amount,
+                    'automatic_payment' => $expense->automatic_payment,
+                    'account_taken_from' => $expense->account_taken_from,
                     'income_id' => $income->id,
-                    'user_id' => $income->user_id,
+                    'user_id' => Auth::id(),
                 ]);
                 $income->remaining -= $expense['amount'];
                 $income->save(); 
                 break;
             }
         }
-    }    
+    }   
+
 }

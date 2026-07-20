@@ -67,72 +67,98 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Groceries',
             'amount'        => 340,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Garbage tags',
             'amount'        => 10,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Gas',
             'amount'        => 85,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Allan',
             'amount'        => 80,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Marianne',
             'amount'        => 60,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Brianna',
             'amount'        => 0,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Autumn',
             'amount'        => 0,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Kristen',
             'amount'        => 20,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Caragh',
             'amount'        => 20,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Angelica',
             'amount'        => 20,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Kids school',
             'amount'        => 50,
             'frequency'     => 'weekly',
+            'date_available' => null,
             'user_id'       => 1,
           ],
           [
             'description'   => 'Mass',
             'amount'        => 25,
             'frequency'     => 'weekly',
+            'date_available' => null,
+            'user_id'       => 1,
+          ],  
+          [
+            'description'   => 'Gifts',
+            'amount'        => 630,
+            'frequency'     => 'monthly',
+            'date_available'  => 31,
+            'user_id'       => 1,
+          ],  
+          [
+            'description'   => 'Prescriptions',
+            'amount'        => 35,
+            'frequency'     => 'monthly',
+            'date_available'  => 31,
             'user_id'       => 1,
           ],               
         ]);
@@ -302,18 +328,6 @@ class DatabaseSeeder extends Seeder
             'automatic_payment'  => true,
             'account_taken_from' => 'debit',
             'user_id'       => 1,
-        ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Gifts',
-            'amount'        => 630,
-            'frequency'     => 'monthly',
-            'user_id'       => 1,
-        ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Prescriptions',
-            'amount'        => 35,
-            'frequency'     => 'monthly',
-            'user_id'       => 1,
-        ]);      
+        ]);    
     }
 }
