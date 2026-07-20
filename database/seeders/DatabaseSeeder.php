@@ -168,7 +168,7 @@ class DatabaseSeeder extends Seeder
             'tithe'         => true,
             'use_budget'    => true,
             'budget_day_of_week'    => 'Friday',
-            'budget_type'   => 'averaged',
+            'budget_type'   => '5 budgets per month',
             'user_id'       => 1,
         ]);
 
