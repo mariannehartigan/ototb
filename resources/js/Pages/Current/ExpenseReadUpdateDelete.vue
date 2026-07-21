@@ -31,3 +31,9 @@ const update = () => {
   form.put(`/expense/${expense.id}`)
 }
 </script>
+
+<style scoped>
+input {
+  width: 8vw;
+}
+</style>
