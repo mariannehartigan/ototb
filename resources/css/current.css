@@ -11,3 +11,40 @@
   border: 0.1vw solid #c2c2c2;
   overflow-y: auto;
 }
+
+.currentIncomeHeading {
+    padding-bottom: 0.5vw;
+    color: #558B2F;
+}
+
+.currentIncomeRow, .currentIncomeRow form {
+    display: grid;
+    grid-template-columns:
+        10vw   /* Received */
+        12vw    /* Date */
+        15vw     /* Description */
+        5vw;     /* Amount */
+
+    align-items: start;
+}
+
+.currentReceivedCol {
+    width: 100%;
+}
+
+.currentDateCol {
+    width: 100%;
+}
+
+.currentDescriptionCol {
+    width: 100%;
+}
+.currentDescriptionCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.currentAmountCol {
+    width: 100%;
+}
+

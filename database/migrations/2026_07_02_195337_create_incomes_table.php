@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('incomes', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
+            $table->date('IncomeMonthYear')->nullable();
             $table->date('date')->nullable();
             $table->text('description')->nullable();
             $table->decimal('amount', 12, 2)->nullable();
             $table->decimal('remaining', 12, 2)->nullable();
             $table->boolean('received')->default(false);
-            $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
+            $table->foreignIdFor(App\Models\PlannedIncome::class)->nullable()->references('id')->on('planned_incomes')->nullOnDelete();
             $table->timestamps();
         });
     }

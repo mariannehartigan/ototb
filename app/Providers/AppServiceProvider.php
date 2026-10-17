@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+// autologin:
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -20,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        // autologin:
+        if (app()->environment('local')) {
+            Auth::loginUsingId(1);
+        }
     }
 }

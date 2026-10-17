@@ -1,0 +1,117 @@
+.upcomingIncomeRow {
+    display: grid;
+    grid-template-columns:
+        12vw    /* Description */
+        5vw     /* Frequency */
+        4vw     /* Amount */
+        24vw    /* Deposited */
+        11vw    /* Start Date */
+        11vw    /* End Date */
+        3vw     /* Tithe */
+        7vw     /* Notes */
+        5vw;    /* Done */
+    align-items: start;
+}
+
+/* .upcomingIncomeRow > div {
+    border: 1px solid red;
+} */
+
+.upcomingIncomeHeading {
+    padding-bottom: 0.5vw;
+    color: #558B2F;
+}
+
+.upcomingIncomeDescriptionCol {
+    width: 100%;
+}
+
+.upcomingIncomeFrequencyCol {
+    width: 100%;
+}
+
+.upcomingIncomeAmountCol {
+    width: 100%;
+}
+
+.upcomingIncomeDepositedCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingIncomeEffectiveDateCol {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.upcomingIncomeEndDateCol {
+    width: 100%;
+}
+
+.upcomingIncomeTitheCol {
+    width: 100%;
+}
+
+.upcomingIncomeNotesCol {
+    width: 100%;
+}
+
+.upcomingIncomeAddCol {
+    width: 100%;
+}
+
+.upcomingIncomeDescriptionCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingIncomeFrequencyCol input,
+.upcomingIncomeFrequencyCol select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingIncomeAmountCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingIncomeDepositedCol > input {
+    width: 5vw;
+    box-sizing: border-box;
+}
+.depositDateInput {
+    width: 5vw;
+}
+
+.upcomingIncomeEffectiveDateCol input {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.upcomingIncomeEndDateCol input {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.upcomingIncomeTitheCol input {
+    width: auto;
+}
+
+.upcomingIncomeNotesCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingIncomeRow input {
+    overflow: hidden;
+}
+
+.upcomingIncomeDepositedCol > div {
+    white-space: nowrap;
+}
+
+.vueDatePicker {
+    display: inline-block;
+}
+

@@ -1,7 +1,23 @@
 <template>
   <div class="current-container">
-    <div v-for="income in incomesWithExpenses">
-      <IncomeReadUpdateDelete :income="income" />
+
+    <div class="currentIncomeHeading currentIncomeRow">
+      <div class="currentReceivedCol">
+        Rec'd
+      </div>
+      <div class="currentDateCol">
+        Date
+      </div>
+      <div class="currentDescriptionCol">
+        Description
+      </div>
+      <div class="currentAmountCol">
+        Amount
+      </div>
+    </div>
+
+    <div v-for="income in incomesWithExpenses" class="currentIncomeRow">
+      <CurrentIncomeReadUpdateDelete :income="income" />
       <Draggable 
         v-model="income.expenses" 
         item-key="id"
@@ -17,13 +33,14 @@
       <br />
     </div>
   </div>
+
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import Draggable from 'vuedraggable'
-import IncomeReadUpdateDelete from './IncomeReadUpdateDelete.vue'
+import CurrentIncomeReadUpdateDelete from './CurrentIncomeReadUpdateDelete.vue'
 import ExpenseReadUpdateDelete from './ExpenseReadUpdateDelete.vue'
 
 const incomesWithExpenses = ref(usePage().props.incomesWithExpenses.map(income => ({ ...income, expenses: [...income.expenses] })) )

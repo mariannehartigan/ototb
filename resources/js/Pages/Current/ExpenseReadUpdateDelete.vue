@@ -35,5 +35,6 @@ const update = () => {
 <style scoped>
 input {
   width: 8vw;
+  padding-top: 2vh;
 }
 </style>

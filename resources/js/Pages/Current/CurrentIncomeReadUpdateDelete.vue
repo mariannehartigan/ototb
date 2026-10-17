@@ -1,10 +1,18 @@
 <template>
   <form @change="update">
-    <input v-model="form.date" />
-    <input v-model="form.description" />
-    <input v-model="form.amount" />
-    <input v-model="form.remaining" />
-    <input v-model="form.received" />
+    <div class="currentReceivedCol">
+      <input v-model="form.received" type="checkbox" />
+    </div>
+    <div class="currentDateCol">
+      <input v-model="form.date" />
+    </div>
+    <div class="currentDescriptionCol">
+      <input v-model="form.description" />
+    </div>
+    <div class="currentAmountCol">
+      <input v-model="form.amount" />
+    </div>
+
   </form>
 </template>
 

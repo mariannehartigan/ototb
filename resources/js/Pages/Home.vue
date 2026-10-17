@@ -35,7 +35,8 @@ import { computed, markRaw, ref } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import Header from '../Pages/Header.vue'
 import NotLoggedIn from '../Pages/NotLoggedIn.vue'
-import Upcoming from './Upcoming/Upcoming.vue'
+import UpcomingIncome from './Upcoming/UpcomingIncome.vue'
+import UpcomingFixedExpenses from './UpcomingFixedExpenses/UpcomingFixedExpenses.vue'
 import Current from './Current/Current.vue'
 import History from './History.vue'
 import Assets from './Assets.vue'
@@ -46,9 +47,14 @@ const user = computed(() => usePage().props.user)
 
 const tabs = [
   {
-    id: 'upcoming',
-    label: 'Upcoming',
-    component: markRaw(Upcoming)
+    id: 'upcomingIncome',
+    label: 'Upcoming Income',
+    component: markRaw(UpcomingIncome)
+  },
+    {
+    id: 'upcomingFixedExpenses',
+    label: 'Upcoming Fixed Expenses',
+    component: markRaw(UpcomingFixedExpenses)
   },
   {
     id: 'current',
@@ -77,5 +83,5 @@ const tabs = [
   },
 ]
 
-const activeTab = ref(tabs[1])
+const activeTab = ref(tabs[2])
 </script>

@@ -13,17 +13,20 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
+            $table->date('expense_month_year')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('tithe')->default(true);
             $table->decimal('amount', 12, 2)->nullable();
             $table->date('date')->nullable();
-            $table->text('account_taken_from')->default('debit');
-            $table->boolean('automatic_payment')->default(false);
-            $table->text('notes')->nullable();
+            $table->string('fixed_or_variable')->nullable();
+            $table->text('account_taken_from')->nullable();
+            $table->string('manual_or_automatic')->nullable();
+            $table->boolean('tithe')->default(false);
+            $table->boolean('automatically_generated_tithe')->default(false); // can this be removed?
             $table->boolean('paid')->default(false);
+            $table->text('notes')->nullable();
+            $table->foreignIdFor(\App\Models\Income::class, 'income_id')->nullable()->references('id')->on('incomes');
             $table->unsignedInteger('position')->default(0);
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
-            $table->foreignIdFor(\App\Models\Income::class, 'income_id')->nullable()->references('id')->on('incomes');
             $table->timestamps();
         });
     }

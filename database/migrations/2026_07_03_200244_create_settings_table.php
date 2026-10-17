@@ -16,7 +16,7 @@ return new class extends Migration
             $table->boolean('tithe')->default(true);
             $table->boolean('use_budget')->default(false);
             $table->string('budget_day_of_week')->nullable();
-            $table->string('budget_type')->nullable();
+            $table->boolean('save_for_five_budget_months');
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
         });

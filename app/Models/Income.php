@@ -7,13 +7,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Income extends Model
 {
-    protected $fillable = ['date', 'description', 'amount', 'remaining', 'received', 'user_id'];
+    protected $fillable = ['date', 'description', 'amount', 'remaining', 'received', 'planned_income_id', 'user_id'];
 
     protected $casts = [
         'date' => 'date',
     ];
 
+    public function plannedIncome() {
+        return $this->belongsTo(\App\Models\PlannedIncome::class);
+    }
+
     public function expenses(): HasMany {
         return $this->hasMany(\App\Models\Expense::class);
     } 
+
 }

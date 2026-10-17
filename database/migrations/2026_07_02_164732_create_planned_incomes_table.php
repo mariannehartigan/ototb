@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('planned_incomes', function (Blueprint $table) {
             $table->id();
             $table->text('description')->nullable();
-            $table->decimal('amount', 12, 2)->nullable();
-            $table->integer('day_deposited')->nullable();
-            $table->text('frequency')->nullable();
+            $table->date('start_date')->default(now())->nullable();
+            $table->date('end_date')->nullable();
             $table->text('notes')->nullable();
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();

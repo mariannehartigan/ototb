@@ -1,0 +1,129 @@
+.upcomingFixedExpenseRow {
+    display: grid;
+    grid-template-columns:
+        10vw    /* Description */
+        5vw     /* Frequency */
+        4vw     /* Amount */
+        14vw    /* Due */
+        10vw    /* From Account */
+        10vw    /* Assigned to Income */
+        9vw    /* Start Date */
+        9vw    /* End Date */
+        3vw     /* Tithe */
+        7vw     /* Notes */
+        5vw;    /* Done */
+    align-items: start;
+}
+
+/* .upcomingFixedExpenseRow > div {
+    border: 1px solid red;
+} */
+
+.upcomingFixedExpenseHeading {
+    padding-bottom: 0.5vw;
+    color: #558B2F;
+}
+
+.upcomingFixedExpenseDescriptionCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseFrequencyCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseAmountCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseDueCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingFixedExpenseFromAccountCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingFixedExpenseAssignedToIncomeCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingFixedExpenseEffectiveDateCol {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.upcomingFixedExpenseEndDateCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseTitheCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseNotesCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseAddCol {
+    width: 100%;
+}
+
+.upcomingFixedExpenseDescriptionCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingFixedExpenseFrequencyCol input,
+.upcomingFixedExpenseFrequencyCol select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingFixedExpenseAmountCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingFixedExpenseDepositedCol > input {
+    width: 5vw;
+    box-sizing: border-box;
+}
+.depositDateInput {
+    width: 5vw;
+}
+
+.upcomingFixedExpenseEffectiveDateCol input {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.upcomingFixedExpenseEndDateCol input {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.upcomingFixedExpenseTitheCol input {
+    width: auto;
+}
+
+.upcomingFixedExpenseNotesCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingFixedExpenseRow input {
+    overflow: hidden;
+}
+
+.upcomingFixedExpenseDepositedCol > div {
+    white-space: nowrap;
+}
+
+.vueDatePicker {
+    display: inline-block;
+}
+

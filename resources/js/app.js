@@ -4,6 +4,8 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { createPinia } from 'pinia'
 import InertiaPersistentLayout from './Pages/InertiaPersistentLayout.vue';
 import '../css/app.css'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 createInertiaApp({
   resolve: name => {
@@ -16,6 +18,7 @@ createInertiaApp({
     createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(createPinia())
+      .component('VueDatePicker', VueDatePicker)
       .mount(el)
   },
   title: (title) => title ? `${import.meta.env.VITE_APP_NAME} - ${title}` : import.meta.env.VITE_APP_NAME,

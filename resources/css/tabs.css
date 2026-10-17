@@ -11,3 +11,16 @@
 .tabs button.active {
   background-color: #ffffff;
 }
+
+/* this whole section .tabs button was used because upcoming fixed expenses tab was weird */
+.tabs button {
+    height: 5vh;
+    width: var(--column1-width);
+    margin: 0.4vw 0 0.4vw 0.4vw;
+    padding-left: 1.2vw;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    color: #558B2F;
+}

@@ -14,12 +14,9 @@ return new class extends Migration
         Schema::create('planned_expenses', function (Blueprint $table) {
             $table->id();
             $table->text('description')->nullable();
-            $table->boolean('tithe')->default(true);
-            $table->decimal('amount', 12, 2)->nullable();
-            $table->text('frequency')->nullable();
-            $table->text('day_due')->nullable();
-            $table->boolean('automatic_payment')->default(false);
-            $table->text('account_taken_from')->default('debit');
+            $table->date('start_date')->default(now())->nullable();
+            $table->date('end_date')->nullable();
+            $table->boolean('tithe')->default(false);
             $table->text('notes')->nullable();
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
