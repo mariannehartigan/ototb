@@ -34,7 +34,7 @@ class InsertTithesService
         }
         
 
-/*         foreach($incomes as $income) {
+        foreach($incomes as $income) {
             Expense::create([
                 'description' => 'tithe',
                 'amount' => $income->amount * 0.1,
@@ -47,6 +47,6 @@ class InsertTithesService
                 'income_id' => $income->id,
                 'user_id' => $income->user_id,
             ]);
-        } */
+        }
     }
 }

@@ -153,10 +153,20 @@
 
         <!--Assigned to income-->
         <div class="upcomingFixedExpenseAssignedToIncomeCol">
-            <input
-                type="text"
-                v-model="plannedFixedExpenseForm.plannedIncomeId" >
+            <select v-model="plannedFixedExpenseForm.plannedIncomeId">
+                <option :value="null">-- Select --</option>
+
+                <option
+                    v-for="income in plannedIncomes"
+                    :key="income.id"
+                    :value="income.id"
+                >
+                    {{ income.description }}
+                </option>
+            </select>
         </div>
+
+
 
         <!-- Start date -->
         <div class="upcomingFixedExpenseEffectiveDateCol">
@@ -276,8 +286,8 @@
 
 
 <script setup>
-import { ref, watch } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { computed, ref, watch } from 'vue'
+import { useForm, usePage } from '@inertiajs/vue3'
 import DayOfWeekDropdown from '../Components/DayOfWeekDropdown.vue'
 import DayOfMonthDropdown from '../Components/DayOfMonthDropdown.vue'
 import FrequencyDropdown from '../Components/FrequencyDropdown.vue'
@@ -287,6 +297,7 @@ const props = defineProps({
   plannedFixedExpense: Object,
   details: Array
 })
+const plannedIncomes = computed(() => usePage().props.plannedIncomes)
 
 const descriptionFilled = ref('')
 
@@ -304,7 +315,7 @@ const plannedFixedExpenseForm = useForm({
   description: '',
   amount: '',
   accountTakenFrom: '',
-  plannedIncomeId: '',
+  plannedIncomeId: null,
   startDate: '',
   endDate: '',
   frequency: props.type === 'addFutureChangeToCurrentFixedExpense' ? props.details[0]?.frequency : '',

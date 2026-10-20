@@ -41,7 +41,7 @@
             <!-- weekly -->
             <input
                 v-if="detail.frequency === 'weekly'"
-                v-model="detail.day_of_week_for_weekly"
+                v-model="detail.day_of_week_for_weekly_biweekly"
                 @change="updateDetail(detail)"
             />
 
@@ -115,10 +115,20 @@
         
         <!-- Assigned to income -->
         <div class="upcomingFixedExpenseAssignedToIncomeCol">
-            <input
+            <select
                 v-model="detail.planned_income_id"
                 @change="updateDetail(detail)"
-            />
+            >
+                <option :value="null">Not assigned</option>
+
+                <option
+                    v-for="income in plannedIncomes"
+                    :key="income.id"
+                    :value="income.id"
+                >
+                    {{ income.description }}
+                </option>
+            </select>
         </div>
 
         <!-- Start date -->
@@ -195,7 +205,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { router, useForm } from '@inertiajs/vue3'
+import { router, useForm, usePage } from '@inertiajs/vue3'
 import AddFixedExpense from './AddFixedExpense.vue';
 import LettersAfterDateLikeTH from '../Components/LettersAfterDateLikeTH.vue'
 const props = defineProps({
@@ -203,6 +213,9 @@ const props = defineProps({
   plannedFixedExpense: Object,
   details: Array
 })
+const plannedIncomes = computed(() => usePage().props.plannedIncomes)
+
+
 
 // effective date
 function displayEffectiveDate(date) {
@@ -270,15 +283,16 @@ const updateFixedExpense = () => {
 }
 
 function updateDetail(detail) {
-    router.put(`/plannedFixedExpensedetail/${detail.id}`, {
+    router.put(`/plannedfixedexpensedetail/${detail.id}`, {
         amount: detail.amount,
         frequency: detail.frequency,
-        day_of_week_for_weekly: detail.day_of_week_for_weekly,
+        day_of_week_for_weekly_biweekly: detail.day_of_week_for_weekly_biweekly,
         day_due_for_monthly: detail.day_due_for_monthly,
         account_taken_from: detail.account_taken_from,
         planned_income_id: detail.planned_income_id,
         deposit_date_for_biweekly_quarterly_yearly_onetime: detail.deposit_date_for_biweekly_quarterly_yearly_onetime,
         effective_date: detail.effective_date,
+        tithe: detail.tithe,
         notes: detail.notes,
     })
 }

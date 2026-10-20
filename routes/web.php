@@ -9,6 +9,7 @@ use App\Http\Controllers\Authentication\ResetPasswordController;
 use App\Http\Controllers\PlannedIncomeController;
 use App\Http\Controllers\PlannedIncomeDetailController;
 use App\Http\Controllers\PlannedFixedExpenseController;
+use App\Http\Controllers\PlannedFixedExpenseDetailController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ExpenseController;
 
@@ -29,7 +30,8 @@ Route::resource('/plannedincomedetail', PlannedIncomeDetailController::class)
     ->only(['update']);
 
 Route::resource('/plannedfixedexpense', PlannedFixedExpenseController::class)->only(['store', 'update']);
-
+Route::resource('/plannedfixedexpensedetail', PlannedFixedExpenseDetailController::class)
+    ->only(['update']);
 
 Route::resource('/income', IncomeController::class)->only(['store', 'update', 'destroy']);
 Route::resource('/expense', ExpenseController::class)->only(['store', 'update', 'destroy']);
