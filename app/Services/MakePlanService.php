@@ -21,7 +21,7 @@ class MakePlanService
         private InsertIncomesService $insertIncomes,
         private InsertTenPercentTithesService $insertTenPercentTithes,
         private InsertTitheExpensesService $insertTitheExpenses,
-        private AllocateExpensesToIncomeIdService $allocateExpensesToIncomeIdService,
+        private AllocateExpensesToIncomeIdService $allocateExpensesToIncomeId,
         // private InsertExpensesService $insertExpenses,
     ) {}
 
@@ -29,22 +29,22 @@ class MakePlanService
     {
         $this->insertIncomes->insertIncomes($date);
 
-            $incomes = Income::where('user_id', Auth::id())
-                ->whereYear('date', $date->year)
-                ->whereMonth('date', $date->month)
-                ->get();
+        $incomes = Income::where('user_id', Auth::id())
+            ->whereYear('date', $date->year)
+            ->whereMonth('date', $date->month)
+            ->get();
 
         $this->insertTenPercentTithes->insertTenPercentTithes($date, $incomes);
         $this->insertTitheExpenses->insertTitheExpenses($date, $incomes);
 
-            $expenses = Expense::where('user_id', Auth::id())
-                ->whereYear('date', $date->year)
-                ->whereMonth('date', $date->month)
-                ->get();
+        $expenses = Expense::where('user_id', Auth::id())
+            ->whereYear('date', $date->year)
+            ->whereMonth('date', $date->month)
+            ->get();
 
-            foreach($expenses as $expense) {    
-        $this->allocateExpensesToIncomeIdService->allocateExpensesToIncomeId($date, $expense);
-            }
+        foreach($expenses as $expense) {    
+            $this->allocateExpensesToIncomeId->allocateExpensesToIncomeId($date, $incomes, $expense);
+        }
         // $this->insertExpenses->insertExpenses($date);
     }
 }

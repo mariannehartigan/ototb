@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\PlannedExpense;
 use App\Models\Expense;
-use App\Services\ExpensesServices\AllocateExpensesService;
+use App\Services\ExpensesServices\AllocateExpensesToIncomeIdService;
 
 class InsertTenPercentTithesService
 {
@@ -21,6 +21,7 @@ class InsertTenPercentTithesService
                 'fixed_or_variable' => null,
                 'manual_or_automatic' => null,
                 'tithe' => true,
+                'automatically_generated_tithe' => true,
                 'account_taken_from' => null,
                 'notes' => null,
                 'income_id' => $income->id,

@@ -7,12 +7,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\PlannedExpense;
 use App\Models\Expense;
-use App\Services\ExpensesServices\AllocateExpensesService;
+use App\Services\ExpensesServices\AllocateExpensesToIncomeIdService;
 
 class InsertTithesService
 {
     public function __construct(
-    private AllocateExpensesService $allocateExpensesService
+    private AllocateExpensesToIncomeIdService $allocateExpensesToIncomeIdService
 ) {}
 
     public function insertTithes(Carbon $date, Collection $incomes): void
@@ -30,7 +30,7 @@ class InsertTithesService
             ->get();
 
         foreach ($titheExpenses as $titheExpense) {
-            $this->allocateExpensesService->allocateExpense($titheExpense, $incomes, $date);
+            $this->allocateExpensesToIncomeIdService->allocateExpensesToIncomeId($titheExpense, $incomes, $date);
         }
         
 

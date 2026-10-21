@@ -5,42 +5,48 @@ namespace App\Services\ExpensesServices;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\Expense;
 use App\Models\PlannedExpense;
 
-class AllocateExpensesService
+class AllocateExpensesToIncomeIdService
 {
-    public function allocateExpensesToIncomeId(PlannedExpense $plannedExpense, Collection $incomes, Carbon $date): void {
+    public function allocateExpensesToIncomeId(Carbon $date, Collection $incomes, Expense $expense): void {
 
             $endOfMonth = $date->copy()->endOfMonth();
 
-            $detail = $plannedExpense->plannedExpenseDetails()
+/*             $detail = $plannedExpense->plannedExpenseDetails()
                 ->whereDate('effective_date', '<=', $endOfMonth)
                 ->orderByDesc('effective_date')
-                ->first();
+                ->first(); */
+
+            // already assigned an income_id
+            if ($expense->automatically_generated_tithe) {
+                return;
+            }
 
             // if there is already a planned_income_id specified
-            if ($detail->planned_income_id !== null) {
+            if ($expense->planned_income_id !== null) {
                 $income = $incomes->first(
-                    fn ($item) => $item->planned_income_id == $detail->planned_income_id
+                    fn ($item) => $item->planned_income_id == $expense->planned_income_id
                 );
                 \App\Models\Expense::create([
                     'date' => $date,
-                    'description' => $plannedExpense->description,
-                    'tithe' => $plannedExpense->tithe,
-                    'amount' => $detail->amount,
-                    'automatic_payment' => $detail->manual_or_automatic === 'automatic',
-                    'account_taken_from' => $detail->account_taken_from,
+                    'description' => $expense->description,
+                    'tithe' => $expense->tithe,
+                    'amount' => $expense->amount,
+                    'automatic_payment' => $expense->manual_or_automatic === 'automatic',
+                    'account_taken_from' => $expense->account_taken_from,
                     'income_id' => $income->id,
                     'user_id' => Auth::id(),
                 ]);
-                $income->remaining -= $detail->amount;
+                $income->remaining -= $expense->amount;
                 $income->save();
             } else {
                 $income = $incomes
                     ->filter(fn ($income) => $income->date <= $date)
-                    ->sortBy(function ($income) use ($date, $incomes, $detail) {
+                    ->sortBy(function ($income) use ($date, $incomes, $expense) {
 
-                        $newRemaining = $income->remaining - $detail->amount;
+                        $newRemaining = $income->remaining - $expense->amount;
 
                         $balances = $incomes
                             ->filter(fn ($i) => $i->date <= $date)
@@ -64,16 +70,16 @@ class AllocateExpensesService
 
                 \App\Models\Expense::create([
                     'date' => $date,
-                    'description' => $plannedExpense->description,
-                    'tithe' => $plannedExpense->tithe,
-                    'amount' => $detail->amount,
-                    'automatic_payment' => $detail->manual_or_automatic === 'automatic',
-                    'account_taken_from' => $detail->account_taken_from,
+                    'description' => $expense->description,
+                    'tithe' => $expense->tithe,
+                    'amount' => $expense->amount,
+                    'automatic_payment' => $expense->manual_or_automatic === 'automatic',
+                    'account_taken_from' => $expense->account_taken_from,
                     'income_id' => $income->id,
                     'user_id' => Auth::id(),
                 ]);
 
-                $income->remaining -= $detail->amount;
+                $income->remaining -= $expense->amount;
                 $income->save();
             }
     }

@@ -18,7 +18,7 @@ class InsertTitheExpensesService
     {
         $endOfMonth = $date->copy()->endOfMonth();
         $titheExpenses = PlannedExpense::where('user_id', Auth::id())
-            ->where('tithe', true)
+            // ->where('tithe', true)
             ->with([
                 'plannedExpenseDetails' => function ($query) use ($endOfMonth) {
                     $query
@@ -28,9 +28,16 @@ class InsertTitheExpensesService
             ])
             ->get();
 
-        foreach ($titheExpenses as $titheExpense) {
+/*         foreach ($titheExpenses as $titheExpense) {
             $this->insertExpenseNoIncomeIdService->insertExpenseNoIncomeId($date, $titheExpense);
+        } */
+
+        foreach ($titheExpenses as $titheExpense) {
+            $detail = $titheExpense->plannedExpenseDetails->last();
+
+            if (!$detail) {continue;}
+
+            $this->insertExpenseNoIncomeIdService->insertExpenseNoIncomeId($date, $titheExpense, $detail);
         }
-        
     }
 }

@@ -1,13 +1,15 @@
 <template>
-  <form @change="update">
-    <input v-model="form.date" />
-    <input v-model="form.description" />
-    <input v-model="form.amount" />
-    <input v-model="form.account_taken_from" />
-    <input v-model="form.automatic_payment" />
-    <input v-model="form.notes" />
-    <input v-model="form.paid" />
-  </form>
+  <div class="expenseReadUpdateDelete">
+    <form @change="update">
+      <input v-model="form.date" />
+      <input v-model="form.description" />
+      <input v-model="form.amount" />
+      <input v-model="form.account_taken_from" />
+      <input v-model="form.automatic_payment" />
+      <input v-model="form.notes" />
+      <input v-model="form.paid" />
+    </form>
+  </div>
 </template>
 
 <script setup>
@@ -32,9 +34,3 @@ const update = () => {
 }
 </script>
 
-<style scoped>
-input {
-  width: 8vw;
-  padding-top: 2vh;
-}
-</style>
