@@ -15,7 +15,7 @@ class InsertTenPercentTithesService
     {
         foreach($incomes as $income) {
             Expense::create([
-                'description' => 'tithe',
+                'description' => 'Tithe',
                 'amount' => $income->amount * 0.1,
                 'date' => $income->date,
                 'fixed_or_variable' => null,

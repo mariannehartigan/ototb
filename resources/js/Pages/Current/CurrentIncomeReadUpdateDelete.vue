@@ -1,18 +1,20 @@
 <template>
   <form @change="update">
-    <div class="currentReceivedCol">
-      <input v-model="form.received" type="checkbox" />
-    </div>
-    <div class="currentDateCol">
-      <input v-model="form.date" />
-    </div>
-    <div class="currentDescriptionCol">
-      <input v-model="form.description" />
-    </div>
-    <div class="currentAmountCol">
-      <input v-model="form.amount" />
-    </div>
-
+      <div class="currentReceivedCol">
+        <input v-model="form.received" type="checkbox" />
+      </div>
+      <div class="currentDateCol">
+        <input v-model="form.date" />
+      </div>
+      <div class="currentDescriptionCol">
+        <input v-model="form.description" />
+      </div>
+      <div class="currentAmountCol">
+        <input v-model="form.amount" />
+      </div>
+      <div class="remainingCol">
+        {{ income.remaining }}
+      </div>
   </form>
 </template>
 
@@ -35,3 +37,9 @@ const update = () => {
   form.put(`/income/${income.id}`)
 }
 </script>
+
+<style scoped>
+.remainingCol {
+  font-weight: bold;
+}
+</style>

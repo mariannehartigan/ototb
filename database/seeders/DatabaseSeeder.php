@@ -575,7 +575,7 @@ class DatabaseSeeder extends Seeder
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpenseDetail::create([
-            'planned_expense_id'    => '14',
+            'planned_expense_id'    => '15',
             'frequency'     => 'monthly',
             'amount'        => 28,
             'fixed_or_variable' => 'fixed',
@@ -594,7 +594,7 @@ class DatabaseSeeder extends Seeder
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpenseDetail::create([
-            'planned_expense_id'    => '14',
+            'planned_expense_id'    => '16',
             'frequency'     => 'monthly',
             'amount'        => 260,
             'fixed_or_variable' => 'fixed',

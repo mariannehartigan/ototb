@@ -2,28 +2,55 @@
   <div class="current-container">
 
     <div class="currentIncomeHeading currentIncomeRow">
-      <div class="currentReceivedCol">
+      <div class="currentIncomeReceivedCol">
         Rec'd
       </div>
-      <div class="currentDateCol">
+      <div class="currentIncomeDateCol">
         Date
       </div>
-      <div class="currentDescriptionCol">
+      <div class="currentIncomeDescriptionCol">
         Description
       </div>
-      <div class="currentAmountCol">
+      <div class="currentIncomeAmountCol">
         Amount
+      </div>
+      <div class="currentIncomeRemainingCol">
+        Remaining
       </div>
     </div>
 
-    <div v-for="income in incomesWithExpenses" class="currentIncomeRow">
-      <CurrentIncomeReadUpdateDelete :income="income" />
+    <div class="currentExpenseHeading currentExpenseRow">
+      <div class="currentExpensePaidCol">
+        Paid
+      </div>
+      <div class="currentExpenseDueCol">
+        Due
+      </div>
+      <div class="currentExpenseDescriptionCol">
+        Description
+      </div>
+      <div class="currentExpenseAmountCol">
+        Amount
+      </div>
+      <div class="currentExpenseAccountTakenFromCol">
+        Account Taken From
+      </div>
+      <div class="currentExpenseAutomaticOrManualCol">
+        Automatic or Manual
+      </div>
+      <div class="currentExpenseNotesCol">
+        Notes
+      </div>
+    </div>
+
+    <div v-for="income in incomesWithExpenses">
+      <CurrentIncomeReadUpdateDelete :income="income" class="currentIncomeRow" />
       <Draggable 
         v-model="income.expenses" 
         item-key="id"
         :group="{ name: 'expenses' }"
         animation = "200"
-        class="pl-[1.5vw]"
+        class="currentExpenseRow"
         @end = "onDragEnd"
       >
         <template #item="{ element }">

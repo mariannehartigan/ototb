@@ -17,17 +17,14 @@
     color: #558B2F;
 }
 
-.currentIncomeRow {
-    display: block;
-}
-
-.currentIncomeHeading, .currentIncomeRow form {
+.currentIncomeHeading, .currentIncomeRow {
     display: grid;
     grid-template-columns:
         5vw   /* Received */
         12vw    /* Date */
         15vw     /* Description */
-        5vw     /* Amount */
+        31vw     /* Amount */
+        5vw     /* Remaining */
         5vw
         5vw
         5vw
@@ -35,26 +32,27 @@
     align-items: start;
 }
 
-.currentReceivedCol {
+.currentIncomeReceivedCol {
     width: 100%;
 }
 
-.currentDateCol {
+.currentIncomeDateCol {
     width: 100%;
 }
 
-.currentDescriptionCol {
+.currentIncomeDescriptionCol {
     width: 100%;
 }
-.currentDescriptionCol input {
+
+.currentIncomeDescriptionCol input {
     width: 100%;
     box-sizing: border-box;
 }
 
-.currentAmountCol {
+.currentIncomeAmountCol {
     width: 100%;
 }
 
-.expenseReadUpdateDelete {
-    padding-left: 5vw;
+.currentIncomeRemainingCol {
+    width: 100%;
 }

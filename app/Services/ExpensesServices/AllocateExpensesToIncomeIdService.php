@@ -6,18 +6,12 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Expense;
-use App\Models\PlannedExpense;
 
 class AllocateExpensesToIncomeIdService
 {
     public function allocateExpensesToIncomeId(Carbon $date, Collection $incomes, Expense $expense): void {
 
             $endOfMonth = $date->copy()->endOfMonth();
-
-/*             $detail = $plannedExpense->plannedExpenseDetails()
-                ->whereDate('effective_date', '<=', $endOfMonth)
-                ->orderByDesc('effective_date')
-                ->first(); */
 
             // already assigned an income_id
             if ($expense->automatically_generated_tithe) {
@@ -29,7 +23,7 @@ class AllocateExpensesToIncomeIdService
                 $income = $incomes->first(
                     fn ($item) => $item->planned_income_id == $expense->planned_income_id
                 );
-                \App\Models\Expense::create([
+/*                 \App\Models\Expense::create([
                     'date' => $date,
                     'description' => $expense->description,
                     'tithe' => $expense->tithe,
@@ -38,7 +32,11 @@ class AllocateExpensesToIncomeIdService
                     'account_taken_from' => $expense->account_taken_from,
                     'income_id' => $income->id,
                     'user_id' => Auth::id(),
-                ]);
+                ]); */
+
+                $expense->income_id = $income->id;
+                $expense->save();
+
                 $income->remaining -= $expense->amount;
                 $income->save();
             } else {
@@ -64,11 +62,10 @@ class AllocateExpensesToIncomeIdService
                     })
                     ->first();
 
-                if (!$income) {
-                    return;
-                }
+                $expense->income_id = $income->id;
+                $expense->save();
 
-                \App\Models\Expense::create([
+/*                 \App\Models\Expense::create([
                     'date' => $date,
                     'description' => $expense->description,
                     'tithe' => $expense->tithe,
@@ -77,7 +74,7 @@ class AllocateExpensesToIncomeIdService
                     'account_taken_from' => $expense->account_taken_from,
                     'income_id' => $income->id,
                     'user_id' => Auth::id(),
-                ]);
+                ]); */
 
                 $income->remaining -= $expense->amount;
                 $income->save();

@@ -12,7 +12,8 @@
 @import 'password-eye.css';
 @import 'upcoming-income.css';
 @import 'upcoming-fixed-expenses.css';
-@import 'current.css';
+@import 'current-incomes.css';
+@import 'current-expenses.css';
 
 @tailwind base;
 @tailwind components;

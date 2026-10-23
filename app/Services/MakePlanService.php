@@ -10,9 +10,9 @@ use App\Models\Expense;
 use App\Services\InsertIncomesService;
 use App\Services\ExpensesServices\InsertTenPercentTithesService;
 use App\Services\ExpensesServices\InsertExpenseNoIncomeIdService;
-use App\Services\ExpensesServices\InsertTitheExpensesService;
+use App\Services\ExpensesServices\InsertExpensesService;
 use App\Services\ExpensesServices\AllocateExpensesToIncomeIdService;
-use App\Services\InsertExpensesService;
+use App\Services\ExpensesServices\AdjustTithesService;
 
 
 class MakePlanService
@@ -20,9 +20,9 @@ class MakePlanService
     public function __construct(
         private InsertIncomesService $insertIncomes,
         private InsertTenPercentTithesService $insertTenPercentTithes,
-        private InsertTitheExpensesService $insertTitheExpenses,
+        private InsertExpensesService $insertExpenses,
         private AllocateExpensesToIncomeIdService $allocateExpensesToIncomeId,
-        // private InsertExpensesService $insertExpenses,
+        private AdjustTithesService $adjustTithes,
     ) {}
 
     public function makePlan(Carbon $date)
@@ -35,7 +35,7 @@ class MakePlanService
             ->get();
 
         $this->insertTenPercentTithes->insertTenPercentTithes($date, $incomes);
-        $this->insertTitheExpenses->insertTitheExpenses($date, $incomes);
+        $this->insertExpenses->insertExpenses($date, $incomes);
 
         $expenses = Expense::where('user_id', Auth::id())
             ->whereYear('date', $date->year)
@@ -45,6 +45,7 @@ class MakePlanService
         foreach($expenses as $expense) {    
             $this->allocateExpensesToIncomeId->allocateExpensesToIncomeId($date, $incomes, $expense);
         }
-        // $this->insertExpenses->insertExpenses($date);
+        
+        $this->adjustTithes->adjustTithes($date, $incomes);
     }
 }

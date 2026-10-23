@@ -1,0 +1,47 @@
+.currentExpenseHeading {
+    padding-bottom: 0.5vw;
+    color: #558B2F;
+}
+
+.currentExpenseRow {
+    padding-left: 1vw;
+}
+
+.currentExpenseHeading, .currentExpenseRow form {
+    display: grid;
+    grid-template-columns:
+        5vw     /* Paid */
+        12vw    /* Due */
+        15vw    /* Description */
+        5vw     /* Amount */
+        9vw     /* Account taken from */
+        9vw     /* Automatic or manual */
+        5vw;     /* Notes */
+    align-items: start;
+}
+
+.currentExpensePaidCol {
+    width: 100%;
+}
+
+.currentExpenseDueCol {
+    width: 100%;
+}
+
+.currentExpenseDescriptionCol {
+    width: 100%;
+}
+
+.currentExpenseDescriptionCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.currentExpenseAmountCol {
+    width: 100%;
+}
+
+.currentExpenseRemainingCol {
+    width: 100%;
+}
+

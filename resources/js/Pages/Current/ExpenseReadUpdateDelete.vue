@@ -1,15 +1,15 @@
 <template>
-  <div class="expenseReadUpdateDelete">
-    <form @change="update">
+  <form @change="update">
+    <div class="currentExpensePaidCol">
+      <input v-model="form.paid" type="checkbox" />
+    </div>
       <input v-model="form.date" />
-      <input v-model="form.description" />
-      <input v-model="form.amount" />
-      <input v-model="form.account_taken_from" />
-      <input v-model="form.automatic_payment" />
-      <input v-model="form.notes" />
-      <input v-model="form.paid" />
-    </form>
-  </div>
+    <input v-model="form.description" />
+    <input v-model="form.amount" />
+    <input v-model="form.account_taken_from" />
+    <input v-model="form.automatic_payment" />
+    <input v-model="form.notes" />
+  </form>
 </template>
 
 <script setup>
