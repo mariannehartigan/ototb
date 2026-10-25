@@ -314,7 +314,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'House Insurance',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => true,
+            'tithe'         => false,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -332,7 +332,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Car Insurance',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => true,
+            'tithe'         => false,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -350,7 +350,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Property Tax',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => true,
+            'tithe'         => false,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -368,7 +368,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Hydro',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => true,
+            'tithe'         => false,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -386,7 +386,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Enbridge',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => true,
+            'tithe'         => false,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);

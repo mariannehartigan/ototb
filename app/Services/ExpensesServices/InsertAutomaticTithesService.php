@@ -48,30 +48,27 @@ class InsertAutomaticTithesService
             }
         }
 
-        // if $remainingTitheRunningTotal != 0, take off next automatic tithes
-        if($remainingTitheRunningTotal != 0) {
+        // if $remainingTitheRunningTotal > 0, take off next automatic tithes
+        if($remainingTitheRunningTotal > 0) {
 
             $automaticTithes = Expense::where('user_id', Auth::id())
-                ->where('automatically_generated_tithe', false)
+                ->where('automatically_generated_tithe', true)
+                // going to need to change this later to expense_month_year
                 ->whereYear('date', $date->year)
                 ->whereMonth('date', $date->month)
-                ->orderBy('date', 'desc')
+                ->orderBy('date', 'asc')
                 ->get();
 
             foreach($automaticTithes as $automaticTithe) {
-
+                if($remainingTitheRunningTotal < $automaticTithe->amount) {
+                    $automaticTithe->amount -= $remainingTitheRunningTotal;
+                    $remainingTitheRunningTotal = 0;
+                    $automaticTithe->save();
+                } else {
+                    $remainingTitheRunningTotal -= $automaticTithe->amount;
+                    $automaticTithe->delete();
+                }
             }
         }
     }
 }
-/* 
-foreach income
-
-	if titheExpense(s) assigned (income id's match)
-		if sum(titheExpenses) smaller than 10% of income
-			-> assign tithe as $automaticTithe = 0.1*income - sum(titheExpenses) - $remainingTitheRunningTotal
-			-> if automaticTithe >=0 then remainingTitheRunningTotal = 0 and insert automaticTithe
-			-> else (automaticTithe < 0) then remainingTitheRunningTotal = |automaticTithe| (and no insertion)
-		else 
-			(no 10% tithe assignment)
-			-> $remainingTitheRunningTotal += sum(titheExpenses) - 10% of income */
