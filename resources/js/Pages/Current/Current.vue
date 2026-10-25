@@ -3,7 +3,7 @@
 
     <div class="currentIncomeHeading currentIncomeRow">
       <div class="currentIncomeReceivedCol">
-        Rec'd
+        Rec'd/Paid
       </div>
       <div class="currentIncomeDateCol">
         Date
@@ -21,22 +21,22 @@
 
     <div class="currentExpenseHeading currentExpenseRow">
       <div class="currentExpensePaidCol">
-        Paid
+        
       </div>
       <div class="currentExpenseDueCol">
-        Due
+        
       </div>
       <div class="currentExpenseDescriptionCol">
-        Description
+        
       </div>
       <div class="currentExpenseAmountCol">
-        Amount
+        
       </div>
       <div class="currentExpenseAccountTakenFromCol">
         Account Taken From
       </div>
       <div class="currentExpenseAutomaticOrManualCol">
-        Automatic or Manual
+        Preauthorized or Manual
       </div>
       <div class="currentExpenseNotesCol">
         Notes

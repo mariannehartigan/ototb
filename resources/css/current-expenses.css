@@ -15,7 +15,7 @@
         15vw    /* Description */
         5vw     /* Amount */
         9vw     /* Account taken from */
-        9vw     /* Automatic or manual */
+        11vw     /* Automatic or manual */
         5vw;     /* Notes */
     align-items: start;
 }

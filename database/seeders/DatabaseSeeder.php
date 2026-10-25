@@ -117,7 +117,7 @@ class DatabaseSeeder extends Seeder
             'planned_income_id' => 3,
             'amount'        => 175.00,
             'frequency'     => 'monthly',
-            'day_deposited_for_monthly' => '20',
+            'day_deposited_for_monthly' => '1',
             'effective_date'    => '2026-10-01',
             'tithe'         => true,
         ]);
@@ -314,7 +314,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'House Insurance',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => false,
+            'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -332,7 +332,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Car Insurance',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => false,
+            'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -350,7 +350,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Property Tax',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => false,
+            'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -368,7 +368,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Hydro',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => false,
+            'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -386,7 +386,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Enbridge',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
-            'tithe'         => false,
+            'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -440,12 +440,14 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Allan giving',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
+            // 'tithe'         => true,
             'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpenseDetail::create([
             'planned_expense_id'    => '9',
+            'planned_income_id'     => '3',
             'frequency'     => 'monthly',
             'amount'        => 50,
             'fixed_or_variable' => 'fixed',
@@ -495,12 +497,14 @@ class DatabaseSeeder extends Seeder
             'description'   => 'St. Francis',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
+            // 'tithe'         => true,
             'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpenseDetail::create([
             'planned_expense_id'    => '11',
+            'planned_income_id'     => '3',
             'frequency'     => 'monthly',
             'amount'        => 20,
             'fixed_or_variable' => 'fixed',
