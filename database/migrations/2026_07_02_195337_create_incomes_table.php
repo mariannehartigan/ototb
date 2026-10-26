@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('incomes', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
-            $table->date('IncomeMonthYear')->nullable();
             $table->date('date')->nullable();
             $table->text('description')->nullable();
             $table->decimal('amount', 12, 2)->nullable();

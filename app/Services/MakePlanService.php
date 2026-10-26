@@ -64,7 +64,18 @@ class MakePlanService
             ])
             ->get();
 
-        $this->insertExpenses->insertExpenses($date, $incomes, $tithePlannedExpenses);
+        $plannedExpenses = PlannedExpense::where('user_id', Auth::id())
+            ->with([
+                'plannedExpenseDetails' => function ($query) use ($endOfMonth) {
+                    $query
+                        ->whereDate('effective_date', '<=', $endOfMonth)
+                        ->orderBy('effective_date');
+                }
+            ])
+            ->get();
+
+        // $this->insertExpenses->insertExpenses($date, $incomes, $tithePlannedExpenses);
+        $this->insertExpenses->insertExpenses($date, $incomes, $plannedExpenses);
         $this->insertAutomaticTithes->insertAutomaticTithes($date, $incomes);
         // $this->insertExpenses->insertExpenses($date, $incomes, $allOtherPlannedExpenses);
 

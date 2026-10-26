@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->date('expense_month_year')->nullable();
+            $table->date('month_year')->nullable();
             $table->text('description')->nullable();
             $table->decimal('amount', 12, 2)->nullable();
             $table->date('date')->nullable();

@@ -11,13 +11,19 @@ class InsertAutomaticTithesService
 {
     public function insertAutomaticTithes(Carbon $date, Collection $incomes): void
     {
+        // if I ever write this again I can do it by calculating how much added Tithe there will be and adding up to that point instead of taking them out again
         $remainingTitheRunningTotal = 0;
+
+        $incomes = $incomes->sortBy('date')->values();
 
         foreach($incomes as $income) {
             $titheExpenses = Expense::where('user_id', Auth::id())
+                ->whereYear('date', $date->year)
+                ->whereMonth('date', $date->month)
                 ->where('tithe', true)
                 ->where('automatically_generated_tithe', false)
                 ->where('income_id', $income->id)
+                ->orderBy('date', 'desc')
                 ->sum('amount');
 
             $automaticTithe = $income->amount * 0.1 - $titheExpenses - $remainingTitheRunningTotal;
@@ -56,7 +62,7 @@ class InsertAutomaticTithesService
                 // going to need to change this later to expense_month_year
                 ->whereYear('date', $date->year)
                 ->whereMonth('date', $date->month)
-                ->orderBy('date', 'asc')
+                ->orderBy('date', 'desc')
                 ->get();
 
             foreach($automaticTithes as $automaticTithe) {
