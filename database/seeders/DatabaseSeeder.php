@@ -33,8 +33,73 @@ class DatabaseSeeder extends Seeder
             'user_id'       => 1,
         ]);
 
+        \App\Models\PlannedIncome::create([
+            'description'   => 'IncomeOne',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'notes'         => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedIncomeDetail::create([
+            'planned_income_id' => 1,
+            'amount'        => 200.00,
+            'frequency'     => 'monthly',
+            'day_deposited_for_monthly' => '1',
+            'tithe'         => true,
+            'effective_date'    => '2026-08-01',
+        ]);
+        
+        \App\Models\PlannedIncome::create([
+            'description'   => 'IncomeTwo',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'notes'         => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedIncomeDetail::create([
+            'planned_income_id' => 2,
+            'amount'        => 150.00,
+            'frequency'     => 'monthly',
+            'day_deposited_for_monthly' => '14',
+            'tithe'         => true,
+            'effective_date'    => '2026-08-01',
+        ]);
+        
+        \App\Models\PlannedIncome::create([
+            'description'   => 'IncomeThree',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'notes'         => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedIncomeDetail::create([
+            'planned_income_id' => 3,
+            'amount'        => 650.00,
+            'frequency'     => 'monthly',
+            'day_deposited_for_monthly' => '10',
+            'tithe'         => true,
+            'effective_date'    => '2026-08-01',
+        ]);     
 
         \App\Models\PlannedIncome::create([
+            'description'   => 'IncomeFour',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'notes'         => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedIncomeDetail::create([
+            'planned_income_id' => 4,
+            'amount'        => 650.00,
+            'frequency'     => 'monthly',
+            'day_deposited_for_monthly' => '27',
+            'tithe'         => true,
+            'effective_date'    => '2026-08-01',
+        ]);
+
+
+// just commented these out to test expense allocation
+/*         \App\Models\PlannedIncome::create([
             'description'   => 'Silver Lining Ventures',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
@@ -240,7 +305,10 @@ class DatabaseSeeder extends Seeder
             'deposit_date_for_biweekly_quarterly_yearly_onetime'    => '2026-01-01',
             'effective_date'    => '2026-01-01',
             'tithe'         => true,
-        ]);
+        ]); */
+
+
+
 
          /* \App\Models\PlannedIncome::create([
             'description'   => 'Hack the Box',
@@ -278,8 +346,67 @@ class DatabaseSeeder extends Seeder
             'user_id'       => 1,
         ]); */
 
+         \App\Models\PlannedExpense::create([
+            'description'   => 'ExpenseOne',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'tithe'         => false,
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpenseDetail::create([
+            'planned_expense_id'    => '1',
+            'frequency'     => 'monthly',
+            'amount'        => 200,
+            'fixed_or_variable' => 'fixed',
+            'manual_or_automatic'  => 'automatic',
+            'day_due_for_monthly'       => 3,
+            'account_taken_from'  => 'RBC',
+            'effective_date'    => '2026-01-01',
+        ]);
 
-        \App\Models\PlannedExpense::create([
+         \App\Models\PlannedExpense::create([
+            'description'   => 'ExpenseTwo',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'tithe'         => false,
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpenseDetail::create([
+            'planned_expense_id'    => '1',
+            'frequency'     => 'monthly',
+            'amount'        => 300,
+            'fixed_or_variable' => 'fixed',
+            'manual_or_automatic'  => 'automatic',
+            'day_due_for_monthly'       => 15,
+            'account_taken_from'  => 'RBC',
+            'effective_date'    => '2026-01-01',
+        ]);
+        
+         \App\Models\PlannedExpense::create([
+            'description'   => 'ExpenseThree',
+            'start_date'  => '2026-01-01',
+            'end_date'    => '2029-08-01',
+            'tithe'         => false,
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedExpenseDetail::create([
+            'planned_expense_id'    => '1',
+            'frequency'     => 'monthly',
+            'amount'        => 500,
+            'fixed_or_variable' => 'fixed',
+            'manual_or_automatic'  => 'automatic',
+            'day_due_for_monthly'       => 28,
+            'account_taken_from'  => 'RBC',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+
+
+// just commented these out to test expense allocation
+/*         \App\Models\PlannedExpense::create([
             'description'   => 'Mortgage',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
@@ -606,6 +733,11 @@ class DatabaseSeeder extends Seeder
             'day_due_for_monthly'       => 28,
             'effective_date'    => '2026-01-01',
         ]);
+ */
+
+
+
+
         
         /*        
         \App\Models\PlannedExpense::create([

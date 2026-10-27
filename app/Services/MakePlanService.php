@@ -42,7 +42,7 @@ class MakePlanService
             ->get();
 
         $endOfMonth = $date->copy()->endOfMonth();
-        $tithePlannedExpenses = PlannedExpense::where('user_id', Auth::id())
+/*         $tithePlannedExpenses = PlannedExpense::where('user_id', Auth::id())
             ->where('tithe', true)
             ->with([
                 'plannedExpenseDetails' => function ($query) use ($endOfMonth) {
@@ -62,7 +62,7 @@ class MakePlanService
                         ->orderBy('effective_date');
                 }
             ])
-            ->get();
+            ->get(); */
 
         $plannedExpenses = PlannedExpense::where('user_id', Auth::id())
             ->with([
