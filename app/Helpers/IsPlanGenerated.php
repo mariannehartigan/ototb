@@ -1,29 +1,24 @@
+
 <?php
 
+use App\Models\Income;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 function isPlanGenerated()
 {
-    $previousMonth = Carbon::now()->subMonth()->month;
-    $currentMonth = Carbon::now()->month;
-    $nextMonth = Carbon::now()->addMonth()->month;
+    $now = Carbon::now();
 
-    $previousMonthIncomesExist = App\Models\Income
-        ::whereYear('date', now()->year)
-        ->whereMonth('date', $previousMonth)
-        ->exists();
-    $currentMonthIncomesExist = App\Models\Income
-        ::whereYear('date', now()->year)
-        ->whereMonth('date', $currentMonth)
-        ->exists();
-    $nextMonthIncomesExist = App\Models\Income
-        ::whereYear('date', now()->year)
-        ->whereMonth('date', $nextMonth)
-        ->exists();
+    $planExists = function (Carbon $date) {
+        return Income::where('user_id', Auth::id())
+            ->whereYear('date', $date->year)
+            ->whereMonth('date', $date->month)
+            ->exists();
+    };
 
     return (object) [
-        'previousMonth' => $previousMonthIncomesExist,
-        'currentMonth' => $currentMonthIncomesExist,
-        'nextMonth' => $nextMonthIncomesExist,
+        'previousMonth' => $planExists($now->copy()->subMonth()),
+        'currentMonth' => $planExists($now->copy()),
+        'nextMonth' => $planExists($now->copy()->addMonth()),
     ];
 }

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('day_deposited_for_monthly')->nullable();
             $table->date('deposit_date_for_biweekly_quarterly_yearly_onetime')->nullable();
             $table->boolean('tithe')->nullable();
+            $table->boolean('assign_no_expenses_except_tithe')->nullable();
             $table->date('effective_date')->default(now())->nullable();
             $table->timestamps();
         });

@@ -17,6 +17,10 @@ class PlannedExpense extends Model
             ->orderBy('day_due_for_monthly');
     }
 
+    public function expenses() {
+        return $this->hasMany(Expense::class);
+    }
+
     public function plannedIncome(): BelongsTo {
         return $this->belongsTo(\App\Models\PlannedIncome::class);
     }

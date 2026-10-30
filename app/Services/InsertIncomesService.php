@@ -2,200 +2,216 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Income;
 use App\Models\PlannedIncome;
 use App\Models\PlannedIncomeDetail;
-use App\Models\Income;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
-class InsertIncomesService {
-
-    public function insertIncomes(Carbon $date) {
-        $plannedIncomes = PlannedIncome::where('user_id', Auth::id())
-            ->where('start_date', '<=', $date)
-            ->where(function ($query) use ($date) {
-                $query->where('end_date', '>=', $date)
-                    ->orWhereNull('end_date');
-                })
-            ->with(['plannedIncomeDetails' => function ($query) use ($date) {
-                $query->where('effective_date', '<=', $date);
-            }])->get();
-
-        foreach ($plannedIncomes as $plannedIncome) {
-            $detail = $plannedIncome->plannedIncomeDetails->first();
-
-            if (!$detail) {
-                continue;
-            }
-            switch ($detail->frequency) {
-
-                case 'weekly':
-                    $this->insertWeeklyIncome($date, $plannedIncome);
-                    break;
-
-                case 'biweekly':
-                    $this->insertBiweeklyIncome($date, $plannedIncome, $detail);
-                    break;
-
-                case 'monthly':
-                    $this->insertMonthlyIncome($date, $plannedIncome, $detail);
-                    break;
-
-                case 'quarterly':
-                    $this->insertQuarterlyIncome($date, $plannedIncome, $detail);
-                    break;
-
-                case 'yearly':
-                    $this->insertYearlyIncome($date, $plannedIncome, $detail);
-                    break;
-
-                case 'onetime':
-                    $this->insertOnetimeIncome($date, $plannedIncome, $detail);
-                    break;
-            }
-        }
-    }
-
-    // WEEKLY
-    private function insertWeeklyIncome(Carbon $date, PlannedIncome $plannedIncome) {
+class InsertIncomesService
+{
+    public function insertIncomes(Carbon $date): void
+    {
         $monthStart = $date->copy()->startOfMonth();
         $monthEnd = $date->copy()->endOfMonth();
 
-        $depositDate = $monthStart->copy();
+        $plannedIncomes = PlannedIncome::where('user_id', Auth::id())
+            ->where(function ($query) use ($monthEnd) {
+                $query->whereDate('start_date', '<=', $monthEnd)
+                    ->orWhereNull('start_date');
+            })
+            ->where(function ($query) use ($monthStart) {
+                $query->whereDate('end_date', '>=', $monthStart)
+                    ->orWhereNull('end_date');
+            })
+            ->with(['plannedIncomeDetails' => function ($query) use ($monthEnd) {
+                $query->whereDate('effective_date', '<=', $monthEnd)
+                    ->orderBy('effective_date')
+                    ->orderBy('id');
+            }])
+            ->get();
 
-        while ($depositDate->lte($monthEnd)) {
+        foreach ($plannedIncomes as $plannedIncome) {
+            $details = $plannedIncome->plannedIncomeDetails;
 
-            // Find the detail that is effective on this date
-            $detail = $plannedIncome->plannedIncomeDetails()
-                ->whereDate('effective_date', '<=', $depositDate)
-                ->orderByDesc('effective_date')
-                ->first();
-
-            if ($detail) {
-
-                // Is this the correct day of the week?
-                if ($depositDate->englishDayOfWeek === $detail->day_of_week_for_weekly) {
-
-                    Income::create([
-                        'planned_income_id' => $plannedIncome->id,
-                        'date' => $depositDate->copy(),
-                        'description' => $plannedIncome->description,
-                        'amount' => $detail->amount,
-                        'remaining' => $detail->amount,
-                        'user_id' => Auth::id(),
-                    ]);
-                }
+            if ($details->isEmpty()) {
+                continue;
             }
 
-            $depositDate->addDay();
+            $startDate = $plannedIncome->start_date
+                ? Carbon::parse($plannedIncome->start_date)
+                : $monthStart->copy();
+
+            $endDate = $plannedIncome->end_date
+                ? Carbon::parse($plannedIncome->end_date)
+                : $monthEnd->copy();
+
+            $firstDate = $startDate->greaterThan($monthStart)
+                ? $startDate
+                : $monthStart;
+
+            $lastDate = $endDate->lessThan($monthEnd)
+                ? $endDate
+                : $monthEnd;
+
+            if ($firstDate->greaterThan($lastDate)) {
+                continue;
+            }
+
+            $this->generateIncomeDates(
+                $plannedIncome,
+                $firstDate,
+                $lastDate
+            );
         }
     }
 
-    // BIWEEKLY
-    private function insertBiweeklyIncome(Carbon $date, PlannedIncome $plannedIncome, PlannedIncomeDetail $detail) {
-        $depositDate = Carbon::parse($detail->effective_date);
+    private function generateIncomeDates(
+        PlannedIncome $plannedIncome,
+        Carbon $firstDate,
+        Carbon $lastDate
+    ): void {
+        $details = $plannedIncome->plannedIncomeDetails;
 
-        while ($depositDate->lt($date->copy()->startOfMonth())) {
-            $depositDate->addWeeks(2);
-        }
+        // Each calendar day is checked against the detail effective
+        // on that day. This also handles changes within a month.
+        $date = $firstDate->copy();
 
-        while (
-            $depositDate->month === $date->month &&
-            $depositDate->year === $date->year
-        ) {
-            Income::create([
-                'planned_income_id' => $plannedIncome->id,
-                'date' => $depositDate->copy(),
-                'description' => $plannedIncome->description,
-                'amount' => $detail->amount,
-                'remaining' => $detail->amount,
-                'user_id' => Auth::id(),
-            ]);
+        while ($date->lessThanOrEqualTo($lastDate)) {
+            $detail = $details
+                ->filter(function ($item) use ($date) {
+                    return $item->effective_date === null
+                        || Carbon::parse($item->effective_date)
+                            ->lessThanOrEqualTo($date);
+                })
+                ->last();
 
-            $depositDate->addWeeks(2);
+            if ($detail && $this->isDepositDate($date, $detail)) {
+                $this->createIncome($plannedIncome, $detail, $date);
+            }
+
+            $date->addDay();
         }
     }
 
-    // MONTHLY
-    private function insertMonthlyIncome(Carbon $date, PlannedIncome $plannedIncome, PlannedIncomeDetail $detail) {
-        $day = min(
-            $detail->day_deposited_for_monthly,
-            $date->daysInMonth
-        ); // constrain to last day of month instead of 31st
+    private function isDepositDate(
+        Carbon $date,
+        PlannedIncomeDetail $detail
+    ): bool {
+        switch ($detail->frequency) {
+            case 'weekly':
+                return $date->englishDayOfWeek ===
+                    $detail->day_of_week_for_weekly;
 
-        $depositDate = Carbon::create(
-            $date->year,
-            $date->month,
-            $day
-        );
+            case 'biweekly':
+                return $this->matchesInterval($date, $detail, 'biweekly');
+
+            case 'monthly':
+                if (!$detail->day_deposited_for_monthly) {
+                    return false;
+                }
+
+                return $date->day === min(
+                    $detail->day_deposited_for_monthly,
+                    $date->daysInMonth
+                );
+
+            case 'quarterly':
+                return $this->matchesInterval($date, $detail, 'quarterly');
+
+            case 'yearly':
+                return $this->matchesInterval($date, $detail, 'yearly');
+
+            case 'onetime':
+                if (!$detail->deposit_date_for_biweekly_quarterly_yearly_onetime) {
+                    return false;
+                }
+
+                return $date->isSameDay(
+                    Carbon::parse(
+                        $detail->deposit_date_for_biweekly_quarterly_yearly_onetime
+                    )
+                );
+
+            default:
+                return false;
+        }
+    }
+
+    private function matchesInterval(
+        Carbon $date,
+        PlannedIncomeDetail $detail,
+        string $frequency
+    ): bool {
+        if (!$detail->deposit_date_for_biweekly_quarterly_yearly_onetime) {
+            return false;
+        }
+
+        $anchor = Carbon::parse(
+            $detail->deposit_date_for_biweekly_quarterly_yearly_onetime
+        )->startOfDay();
+
+        if ($date->lessThan($anchor)) {
+            return false;
+        }
+
+        if ($frequency === 'biweekly') {
+            return $anchor->diffInDays($date) % 14 === 0;
+        }
+
+        // Use the original anchor day, not a repeatedly shifted
+        // date, so month-end dates do not drift.
+        if ($frequency === 'quarterly') {
+            $months = (
+                ($date->year - $anchor->year) * 12
+                + $date->month - $anchor->month
+            );
+
+            if ($months < 0 || $months % 3 !== 0) {
+                return false;
+            }
+
+            return $date->day === min(
+                $anchor->day,
+                $date->daysInMonth
+            );
+        }
+
+        if ($frequency === 'yearly') {
+            return $date->month === $anchor->month
+                && $date->day === min(
+                    $anchor->day,
+                    $date->daysInMonth
+                );
+        }
+
+        return false;
+    }
+
+    private function createIncome(
+        PlannedIncome $plannedIncome,
+        PlannedIncomeDetail $detail,
+        Carbon $date
+    ): void {
+        // Prevent generating the same planned income twice
+        // on the same date.
+        $exists = Income::where('user_id', Auth::id())
+            ->where('planned_income_id', $plannedIncome->id)
+            ->whereDate('date', $date->toDateString())
+            ->exists();
+
+        if ($exists) {
+            return;
+        }
 
         Income::create([
             'planned_income_id' => $plannedIncome->id,
-            'date' => $depositDate,
+            'date' => $date->toDateString(),
             'description' => $plannedIncome->description,
             'amount' => $detail->amount,
             'remaining' => $detail->amount,
+            'received' => false,
             'user_id' => Auth::id(),
         ]);
-    }
-
-    // QUARTERLY
-    private function insertQuarterlyIncome(Carbon $date, PlannedIncome $plannedIncome, PlannedIncomeDetail $detail) {
-
-        $depositDate = Carbon::parse($detail->effective_date);
-
-        while ($depositDate->lt($date->copy()->startOfMonth())) {
-            $depositDate->addMonthsNoOverflow(3);
-        }
-
-        while (
-            $depositDate->month === $date->month &&
-            $depositDate->year === $date->year
-        ) {
-            Income::create([
-                'planned_income_id' => $plannedIncome->id,
-                'date' => $depositDate->copy(),
-                'description' => $plannedIncome->description,
-                'amount' => $detail->amount,
-                'remaining' => $detail->amount,
-                'user_id' => Auth::id(),
-            ]);
-
-            $depositDate->addMonthsNoOverflow(3);
-        }
-    }
-
-    // YEARLY
-    private function insertYearlyIncome(Carbon $date, PlannedIncome $plannedIncome, PlannedIncomeDetail $detail) {
-        $depositDate = Carbon::parse($detail->effective_date);
-        while ($depositDate->lt($date->copy()->startOfMonth())) {
-          $depositDate->addYearNoOverflow();
-        }
-        while ($depositDate->month === $date->month && $depositDate->year === $date->year) {
-          \App\Models\Income::create([
-            'planned_income_id' => $plannedIncome->id,
-            'date' => $depositDate->copy(),
-            'description' => $plannedIncome->description,
-            'amount' => $detail->amount,
-            'tithe' => $detail->tithe,
-            'user_id' => Auth::id(),
-            ]);
-          $depositDate->addYearNoOverflow();
-        }      
-    }
-    
-    // ONETIME
-    private function insertOnetimeIncome(Carbon $date, PlannedIncome $plannedIncome, PlannedIncomeDetail $detail) {
-        $depositDate = Carbon::parse($detail->effective_date);
-        if ($depositDate->month === $date->month && $depositDate->year === $date->year) {
-            \App\Models\Income::create([
-                'planned_income_id' => $plannedIncome->id,
-                'date' => $depositDate,
-                'description' => $plannedIncome->description,
-                'amount' => $detail->amount,
-                'tithe' => $detail->tithe,
-                'user_id' => Auth::id(),
-            ]);
-        }      
     }
 }

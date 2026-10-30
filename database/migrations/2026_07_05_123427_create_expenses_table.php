@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('paid')->default(false);
             $table->text('notes')->nullable();
             $table->foreignIdFor(\App\Models\Income::class, 'income_id')->nullable()->references('id')->on('incomes');
+            $table->foreignIdFor(\App\Models\PlannedExpense::class, 'planned_expense_id')->nullable()->references('id')->on('planned_expenses');
             $table->unsignedInteger('position')->default(0);
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
