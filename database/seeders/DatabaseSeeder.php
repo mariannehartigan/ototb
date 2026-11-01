@@ -513,7 +513,7 @@ class DatabaseSeeder extends Seeder
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 23,
             'account_taken_from'  => 'RBC',
-            'effective_date'    => '2026-11-01',
+            'effective_date'    => '2026-11-02',
         ]);
 
         \App\Models\PlannedExpense::create([
