@@ -18,13 +18,10 @@ return new class extends Migration
             $table->text('frequency')->nullable();
             $table->decimal('amount', 12, 2)->nullable();
             $table->text('account_taken_from')->nullable();
-            $table->string('fixed_or_variable')->nullable();
             $table->string('manual_or_automatic')->nullable();
-            $table->boolean('is_five_budget_month_savings')->default(false);
             $table->text('day_of_week_for_weekly_biweekly')->nullable();
             $table->unsignedInteger('day_due_for_monthly')->nullable();
             $table->date('due_date_for_biweekly_quarterly_yearly_onetime')->nullable();
-            $table->boolean('assign_to_following_month')->nullable();
             $table->date('effective_date')->default(now())->nullable();
             $table->timestamps();
         });

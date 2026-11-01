@@ -2,338 +2,626 @@
 
 namespace App\Services\ExpensesServices;
 
-use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 class DistributeExpensesService
 {
-    private const EPSILON = 0.000001;
-
-    public function distributeExpenses(Collection $incomes, Collection $expenses): array
-    {
-        $tithingEnabled = (bool) (Setting::where('user_id', Auth::id())->first()?->tithe ?? true);
+    public function distributeExpenses(
+        Collection $incomes,
+        Collection $expenses,
+        Carbon $month
+    ): array {
         $balances = [];
         $assignments = [];
         $unassigned = [];
 
         foreach ($incomes as $income) {
-            $obligation = $tithingEnabled && $income->tithe
-                && !($income->tithe_already_accounted ?? false)
-                ? round((float) $income->amount * 0.10, 2) : 0.0;
+            $key = (string) $income->plan_key;
 
-            $balances[$income->id] = [
+            $balances[$key] = [
                 'income' => $income,
-                'opening' => (float) ($income->opening_balance ?? $income->amount),
-                'tithe_obligation' => $obligation,
-                'manual_tithe_assigned' => 0.0,
-                'automatic_tithe' => $obligation,
-                'remaining' => 0.0,
+                'opening' => (float) $income->opening_balance,
+                'remaining' => (float) $income->opening_balance,
+                'automatic_tithe' => 0,
                 'expenses' => [],
             ];
 
-            $this->recalculate($balances[$income->id]);
+            $this->recalculate($balances[$key]);
         }
 
-        // Due date is the first priority. Within a day, honour explicit
-        // income selections and tithes before ordinary expenses.
-        $ordered = $expenses->sort(function ($a, $b) {
-            $dateComparison = strcmp(
-                Carbon::parse($a->date)->toDateString(),
-                Carbon::parse($b->date)->toDateString()
+        $monthEnd = $month->copy()->endOfMonth();
+
+        $currentExpenses = $expenses
+            ->filter(fn ($expense) =>
+                Carbon::parse($expense->date)->lte($monthEnd)
+            )
+            ->sortBy([
+                ['date', 'asc'],
+                ['amount', 'desc'],
+            ])
+            ->values();
+
+        $futureExpenses = $expenses
+            ->filter(fn ($expense) =>
+                Carbon::parse($expense->date)->gt($monthEnd)
+            )
+            ->sortBy([
+                ['amount', 'desc'],
+                ['date', 'asc'],
+            ])
+            ->values();
+
+        // 1. Assign all current-month expenses.
+        foreach ($currentExpenses as $expense) {
+            $eligible = $this->eligibleIncomes(
+                $expense,
+                $balances
             );
 
-            if ($dateComparison !== 0) {
-                return $dateComparison;
-            }
-
-            $priority = fn ($e) => $e->planned_income_id !== null
-                ? 0
-                : ($e->tithe ? 1 : 2);
-
-            return $priority($a) <=> $priority($b)
-                ?: ((float) $b->amount <=> (float) $a->amount)
-                ?: ($a->id <=> $b->id);
-        });
-
-        foreach ($ordered as $expense) {
-            $regular = $this->eligible($expense, $balances, false);
-            $candidates = $regular ?: $this->eligible($expense, $balances, true);
-
-            if (!$candidates) {
+            if (empty($eligible)) {
                 $unassigned[] = [
                     'expense' => $expense,
-                    'reason' => 'No income received on or before the due date satisfies the restrictions',
+                    'reason' => 'No eligible income by due date',
                 ];
 
                 continue;
             }
 
-            $id = $this->bestIncome($expense, $candidates, $balances);
+            $chosenIncome = $this->chooseCurrentIncome(
+                $expense,
+                $eligible,
+                $balances
+            );
 
-            $this->assign($expense, $id, $balances, $assignments);
+            $this->assignExpense(
+                $expense,
+                $chosenIncome,
+                $balances,
+                $assignments
+            );
         }
 
-        // Move whole expenses among eligible regular incomes to reduce the
-        // worst negative balance and then improve percentage balance.
-        // Never change the due date or an explicit income selection.
-        for ($iteration = 0; $iteration < 300; $iteration++) {
-            $current = $this->penalty($balances);
-            $best = null;
-            $bestScore = $current;
+        // 2. Improve the current-month distribution.
+        $this->improveCurrentAssignments(
+            $currentExpenses,
+            $balances,
+            $assignments
+        );
 
-            foreach ($ordered as $expense) {
-                if (
-                    !isset($assignments[$expense->id])
-                    || $expense->planned_income_id !== null
-                ) {
-                    continue;
-                }
+        // 3. Optimize future expenses as a group.
+        $futureAssignments = $this->optimizeFutureExpenses(
+            $futureExpenses,
+            $balances
+        );
 
-                $sourceId = $assignments[$expense->id];
+        foreach ($futureExpenses as $expense) {
+            $expenseKey = (string) $expense->plan_key;
 
-                if ($balances[$sourceId]['income']->classification !== 'regular') {
-                    continue;
-                }
+            if (!isset($futureAssignments[$expenseKey])) {
+                $unassigned[] = [
+                    'expense' => $expense,
+                    'reason' => 'Left for next month',
+                ];
 
-                foreach ($this->eligible($expense, $balances, false) as $targetId) {
-                    if ($targetId === $sourceId) {
-                        continue;
-                    }
-
-                    $trial = $balances;
-
-                    $this->unassign($expense, $sourceId, $trial);
-                    $this->put($expense, $targetId, $trial);
-
-                    $score = $this->penalty($trial);
-
-                    if ($score < $bestScore - self::EPSILON) {
-                        $bestScore = $score;
-                        $best = [$expense, $sourceId, $targetId];
-                    }
-                }
-            }
-
-            if ($best === null) {
-                break;
-            }
-
-            [$expense, $sourceId, $targetId] = $best;
-
-            $this->unassign($expense, $sourceId, $balances);
-            $this->assign($expense, $targetId, $balances, $assignments);
-        }
-
-        // Backup is a last resort: move ordinary expenses from overdrawn
-        // regular incomes onto eligible backup incomes when it improves
-        // the regular-income shortfall. Negative balances remain permitted.
-        foreach ($ordered as $expense) {
-            $sourceId = $assignments[$expense->id] ?? null;
-
-            if (
-                $sourceId === null
-                || $expense->tithe
-                || $expense->planned_income_id !== null
-            ) {
                 continue;
             }
 
-            if ($balances[$sourceId]['income']->classification !== 'regular') {
-                continue;
-            }
-
-            if ($balances[$sourceId]['remaining'] >= -self::EPSILON) {
-                continue;
-            }
-
-            $backupIds = array_values(array_filter(
-                $this->eligible($expense, $balances, true),
-                fn ($id) => $balances[$id]['income']->classification === 'backup'
-            ));
-
-            if (!$backupIds) {
-                continue;
-            }
-
-            $targetId = $this->bestIncome($expense, $backupIds, $balances);
-
-            $this->unassign($expense, $sourceId, $balances);
-            $this->assign($expense, $targetId, $balances, $assignments);
+            $this->assignExpense(
+                $expense,
+                $futureAssignments[$expenseKey],
+                $balances,
+                $assignments
+            );
         }
 
         return [
             'assignments' => $assignments,
             'unassigned' => $unassigned,
             'income_balances' => $balances,
-            'backup_decisions' => [],
         ];
     }
 
-    private function eligible(
+    private function eligibleIncomes(
         object $expense,
-        array $balances,
-        bool $allowBackup
+        array $balances
     ): array {
+        $eligible = [];
 
-        $ids = [];
-        $due = Carbon::parse($expense->date)->startOfDay();
-
-        foreach ($balances as $id => $balance) {
+        foreach ($balances as $key => $balance) {
             $income = $balance['income'];
 
-            if (Carbon::parse($income->date)->startOfDay()->gt($due)) {
+            if (
+                Carbon::parse($income->date)->startOfDay()
+                    ->gt(Carbon::parse($expense->date)->startOfDay())
+            ) {
                 continue;
             }
 
-            if ($income->assign_no_expenses_except_tithe && !$expense->tithe) {
+            if (
+                $income->assign_no_expenses_except_tithe
+                && !$expense->tithe
+            ) {
                 continue;
             }
 
             if (
                 $expense->planned_income_id !== null
-                && $expense->planned_income_id != $income->planned_income_id
+                && $expense->planned_income_id
+                    != $income->planned_income_id
             ) {
                 continue;
             }
 
-            if (
-                !$allowBackup
-                && $income->classification === 'backup'
-                && $expense->planned_income_id === null
-            ) {
-                continue;
-            }
-
-            $ids[] = $id;
+            $eligible[] = (string) $key;
         }
 
-        return $ids;
+        return $eligible;
     }
 
-    private function bestIncome(
+    private function chooseCurrentIncome(
         object $expense,
-        array $ids,
+        array $eligible,
         array $balances
-    ): int|string {
+    ): string {
+        $candidates = [];
 
-        $bestId = $ids[0];
-        $bestScore = -INF;
+        foreach ($eligible as $key) {
+            $trial = $balances[$key];
 
-        foreach ($ids as $id) {
-            $trial = $balances[$id];
-            $trialBalances = [$id => $trial];
+            $trial['expenses'][
+                (string) $expense->plan_key
+            ] = $expense;
 
-            $this->put($expense, $id, $trialBalances);
+            $this->recalculate($trial);
 
-            // Score favours the highest percentage left after assignment.
-            // Negative balances are allowed.
-            $after = $trialBalances[$id]['remaining'];
+            $income = $balances[$key]['income'];
 
-            $score = $after / max(
-                0.01,
-                abs((float) $trial['income']->amount)
+            $candidates[] = [
+                'key' => $key,
+                'remaining' => $trial['remaining'],
+                'negative' => max(0, -$trial['remaining']),
+                'backup' =>
+                    $income->classification === 'backup',
+                'percentage' =>
+                    $trial['remaining']
+                    / max(0.01, (float) $income->amount),
+            ];
+        }
+
+        // Use regular incomes first, unless a backup income
+        // is needed to avoid a negative balance.
+        $regularCanCover = array_filter(
+            $candidates,
+            fn ($candidate) =>
+                !$candidate['backup']
+                && $candidate['remaining'] >= 0
+        );
+
+        $anyCanCover = array_filter(
+            $candidates,
+            fn ($candidate) =>
+                $candidate['remaining'] >= 0
+        );
+
+        if (!empty($regularCanCover)) {
+            $candidates = array_values($regularCanCover);
+        } elseif (!empty($anyCanCover)) {
+            $candidates = array_values($anyCanCover);
+        } else {
+            $regular = array_filter(
+                $candidates,
+                fn ($candidate) => !$candidate['backup']
             );
 
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestId = $id;
+            if (!empty($regular)) {
+                $candidates = array_values($regular);
             }
         }
 
-        return $bestId;
+        usort($candidates, function ($a, $b) {
+            if ($a['negative'] != $b['negative']) {
+                return $a['negative'] <=> $b['negative'];
+            }
+
+            return $b['percentage'] <=> $a['percentage'];
+        });
+
+        return $candidates[0]['key'];
     }
 
-    private function assign(
-        object $expense,
-        int|string $id,
+    private function improveCurrentAssignments(
+        Collection $expenses,
         array &$balances,
         array &$assignments
     ): void {
+        for ($iteration = 0; $iteration < 300; $iteration++) {
+            $bestScore = $this->currentScore($balances);
+            $bestMove = null;
 
-        $this->put($expense, $id, $balances);
-        $assignments[$expense->id] = $id;
+            foreach ($expenses as $expense) {
+                $expenseKey = (string) $expense->plan_key;
+
+                if (!isset($assignments[$expenseKey])) {
+                    continue;
+                }
+
+                $from = $assignments[$expenseKey];
+
+                foreach (
+                    $this->eligibleIncomes($expense, $balances)
+                    as $to
+                ) {
+                    if ($from === $to) {
+                        continue;
+                    }
+
+                    $trial = $balances;
+
+                    $this->removeExpense(
+                        $expense,
+                        $from,
+                        $trial
+                    );
+
+                    $this->putExpense(
+                        $expense,
+                        $to,
+                        $trial
+                    );
+
+                    $score = $this->currentScore($trial);
+
+                    if ($score < $bestScore - 0.000001) {
+                        $bestScore = $score;
+                        $bestMove = [$expense, $from, $to];
+                    }
+                }
+            }
+
+            if ($bestMove === null) {
+                break;
+            }
+
+            [$expense, $from, $to] = $bestMove;
+
+            $this->removeExpense(
+                $expense,
+                $from,
+                $balances
+            );
+
+            $this->assignExpense(
+                $expense,
+                $to,
+                $balances,
+                $assignments
+            );
+        }
     }
 
-    private function put(
-        object $expense,
-        int|string $id,
-        array &$balances
-    ): void {
+    private function currentScore(array $balances): float
+    {
+        $negative = 0;
+        $backupUsed = 0;
+        $regular = [];
 
-        $balances[$id]['expenses'][$expense->id] = $expense;
-        $this->recalculate($balances[$id]);
+        foreach ($balances as $balance) {
+            $income = $balance['income'];
+
+            $negative += max(
+                0,
+                -$balance['remaining']
+            );
+
+            if ($income->classification === 'backup') {
+                foreach ($balance['expenses'] as $expense) {
+                    if ($expense->planned_income_id === null) {
+                        $backupUsed += (float) $expense->amount;
+                    }
+                }
+            } elseif (
+                !$income->assign_no_expenses_except_tithe
+                && (float) $income->amount > 0
+            ) {
+                $regular[] = $balance;
+            }
+        }
+
+        $imbalance = 0;
+
+        if (count($regular) > 1) {
+            $totalIncome = array_sum(array_map(
+                fn ($balance) =>
+                    (float) $balance['income']->amount,
+                $regular
+            ));
+
+            $totalRemaining = array_sum(array_map(
+                fn ($balance) => $balance['remaining'],
+                $regular
+            ));
+
+            if ($totalIncome > 0) {
+                $target = $totalRemaining / $totalIncome;
+
+                foreach ($regular as $balance) {
+                    $amount = (float) $balance['income']->amount;
+
+                    $percentage =
+                        $balance['remaining'] / $amount;
+
+                    $imbalance += $amount
+                        * pow($percentage - $target, 2);
+                }
+            }
+        }
+
+        return $negative * 1000000
+            + $backupUsed * 100
+            + $imbalance;
     }
 
-    private function unassign(
+    private function optimizeFutureExpenses(
+        Collection $expenses,
+        array $balances
+    ): array {
+        $items = $expenses->values()->all();
+
+        // Use cents internally to avoid floating-point
+        // comparisons around zero.
+        $bestAssignments = [];
+        $bestFunded = -1;
+        $bestScore = INF;
+
+        $regularIncomeKeys = array_keys(array_filter(
+            $balances,
+            fn ($balance) =>
+                $balance['income']->classification !== 'backup'
+        ));
+
+        $expenseOptions = [];
+
+        foreach ($items as $expense) {
+            $expenseKey = (string) $expense->plan_key;
+
+            $eligible = $this->eligibleIncomes(
+                $expense,
+                $balances
+            );
+
+            // Prefer regular incomes where available.
+            $regularEligible = array_values(array_filter(
+                $eligible,
+                fn ($key) =>
+                    in_array($key, $regularIncomeKeys, true)
+            ));
+
+            $expenseOptions[$expenseKey] = !empty($regularEligible)
+                ? $regularEligible
+                : $eligible;
+        }
+
+        // A bounded branch-and-bound search.
+        // It explores different combinations, including
+        // leaving an expense for November.
+        $nodesVisited = 0;
+        $maxNodes = 100000;
+
+        $search = function (
+            int $index,
+            array $workingBalances,
+            array $workingAssignments,
+            int $fundedCents
+        ) use (
+            &$search,
+            &$bestAssignments,
+            &$bestFunded,
+            &$bestScore,
+            &$nodesVisited,
+            $maxNodes,
+            $items,
+            $expenseOptions
+        ): void {
+            $nodesVisited++;
+
+            if ($nodesVisited > $maxNodes) {
+                return;
+            }
+
+            if ($index >= count($items)) {
+                $score = $this->futureBalanceScore(
+                    $workingBalances
+                );
+
+                if (
+                    $fundedCents > $bestFunded
+                    || (
+                        $fundedCents === $bestFunded
+                        && $score < $bestScore
+                    )
+                ) {
+                    $bestFunded = $fundedCents;
+                    $bestScore = $score;
+                    $bestAssignments = $workingAssignments;
+                }
+
+                return;
+            }
+
+            $expense = $items[$index];
+            $expenseKey = (string) $expense->plan_key;
+            $amountCents = (int) round(
+                (float) $expense->amount * 100
+            );
+
+            // Try assigning the expense to each eligible income.
+            foreach ($expenseOptions[$expenseKey] as $incomeKey) {
+                $trial = $workingBalances;
+
+                $this->putExpense(
+                    $expense,
+                    $incomeKey,
+                    $trial
+                );
+
+                // Future allocations cannot create negative balances.
+                if (
+                    $trial[$incomeKey]['remaining'] < -0.000001
+                ) {
+                    continue;
+                }
+
+                $newAssignments = $workingAssignments;
+                $newAssignments[$expenseKey] = $incomeKey;
+
+                $search(
+                    $index + 1,
+                    $trial,
+                    $newAssignments,
+                    $fundedCents + $amountCents
+                );
+            }
+
+            // Also try leaving this expense for November.
+            $search(
+                $index + 1,
+                $workingBalances,
+                $workingAssignments,
+                $fundedCents
+            );
+        };
+
+        $search(0, $balances, [], 0);
+
+        return $bestAssignments;
+    }
+
+    private function futureBalanceScore(
+        array $balances
+    ): float {
+        $regular = array_filter(
+            $balances,
+            fn ($balance) =>
+                $balance['income']->classification !== 'backup'
+                && !$balance['income']
+                    ->assign_no_expenses_except_tithe
+                && (float) $balance['income']->amount > 0
+        );
+
+        if (count($regular) < 2) {
+            return 0;
+        }
+
+        $totalIncome = 0;
+        $totalRemaining = 0;
+
+        foreach ($regular as $balance) {
+            $totalIncome += (float) $balance['income']->amount;
+            $totalRemaining += $balance['remaining'];
+        }
+
+        if ($totalIncome <= 0) {
+            return 0;
+        }
+
+        $target = $totalRemaining / $totalIncome;
+        $score = 0;
+
+        foreach ($regular as $balance) {
+            $amount = (float) $balance['income']->amount;
+
+            $percentage = $balance['remaining'] / $amount;
+
+            $score += $amount
+                * pow($percentage - $target, 2);
+        }
+
+        return $score;
+    }
+
+    private function assignExpense(
         object $expense,
-        int|string $id,
+        string $incomeKey,
+        array &$balances,
+        array &$assignments
+    ): void {
+        $this->putExpense(
+            $expense,
+            $incomeKey,
+            $balances
+        );
+
+        $assignments[
+            (string) $expense->plan_key
+        ] = $incomeKey;
+    }
+
+    private function putExpense(
+        object $expense,
+        string $incomeKey,
         array &$balances
     ): void {
+        $balances[$incomeKey]['expenses'][
+            (string) $expense->plan_key
+        ] = $expense;
 
-        unset($balances[$id]['expenses'][$expense->id]);
-        $this->recalculate($balances[$id]);
+        $this->recalculate($balances[$incomeKey]);
+    }
+
+    private function removeExpense(
+        object $expense,
+        string $incomeKey,
+        array &$balances
+    ): void {
+        unset(
+            $balances[$incomeKey]['expenses'][
+                (string) $expense->plan_key
+            ]
+        );
+
+        $this->recalculate($balances[$incomeKey]);
     }
 
     private function recalculate(array &$balance): void
     {
-        $manual = 0.0;
-        $ordinary = 0.0;
+        $income = $balance['income'];
+
+        $ordinaryExpenses = 0;
+        $manualTithes = 0;
 
         foreach ($balance['expenses'] as $expense) {
             if ($expense->tithe) {
-                $manual += (float) $expense->amount;
+                $manualTithes += (float) $expense->amount;
             } else {
-                $ordinary += (float) $expense->amount;
+                $ordinaryExpenses += (float) $expense->amount;
             }
         }
 
-        $balance['manual_tithe_assigned'] = round($manual, 2);
+        $titheRequired = $income->tithe
+            ? round((float) $income->amount * 0.10, 2)
+            : 0;
+
+        $alreadyPaid =
+            (float) ($income->paid_manual_tithe ?? 0)
+            + (float) ($income->paid_auto_tithe ?? 0);
+
+        $automaticTithe = max(
+            0,
+            $titheRequired - $alreadyPaid - $manualTithes
+        );
 
         $balance['automatic_tithe'] = round(
-            max(0, $balance['tithe_obligation'] - $manual),
+            $automaticTithe,
             2
         );
 
         $balance['remaining'] = round(
             $balance['opening']
-            - $ordinary
-            - $manual
-            - $balance['automatic_tithe'],
+                - $ordinaryExpenses
+                - $manualTithes
+                - $automaticTithe,
             2
         );
-    }
-
-    private function penalty(array $balances): float
-    {
-        $regular = array_filter(
-            $balances,
-            fn ($b) =>
-                $b['income']->classification === 'regular'
-                && !$b['income']->assign_no_expenses_except_tithe
-                && (float) $b['income']->amount > 0
-        );
-
-        if (!$regular) {
-            return 0.0;
-        }
-
-        $percentages = array_map(
-            fn ($b) =>
-                $b['remaining'] / (float) $b['income']->amount,
-            $regular
-        );
-
-        // Strongly prefer eliminating negative balances;
-        // then equalize percentages.
-        $negative = array_sum(array_map(
-            fn ($b) => max(0, -$b['remaining']),
-            $regular
-        ));
-
-        return $negative * 1000000
-            + max($percentages)
-            - min($percentages);
     }
 }

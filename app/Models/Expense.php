@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Expense extends Model
 {
-    protected $fillable = ['description', 'tithe', 'automatically_generated_tithe', 'amount', 'date', 'frequency', 'manual_or_automatic', 'account_taken_from', 'notes', 'paid', 'income_id', 'user_id'];
+    protected $fillable = ['month_year', 'description', 'tithe', 'automatically_generated_tithe', 'amount', 'date', 'frequency', 'manual_or_automatic', 'account_taken_from', 'notes', 'paid', 'income_id', 'planned_expense_id', 'user_id'];
     
     public function plannedExpense() {
         return $this->belongsTo(PlannedExpense::class);

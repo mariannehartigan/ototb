@@ -37,6 +37,7 @@ import Header from '../Pages/Header.vue'
 import NotLoggedIn from '../Pages/NotLoggedIn.vue'
 import UpcomingIncome from './Upcoming/UpcomingIncome.vue'
 import UpcomingFixedExpenses from './UpcomingFixedExpenses/UpcomingFixedExpenses.vue'
+import Budget from './Budget/Budget.vue'
 import Current from './Current/Current.vue'
 import History from './History.vue'
 import Assets from './Assets.vue'
@@ -48,13 +49,18 @@ const user = computed(() => usePage().props.user)
 const tabs = [
   {
     id: 'upcomingIncome',
-    label: 'Upcoming Income',
+    label: 'Income',
     component: markRaw(UpcomingIncome)
   },
-    {
+  {
     id: 'upcomingFixedExpenses',
-    label: 'Upcoming Fixed Expenses',
+    label: 'Bills',
     component: markRaw(UpcomingFixedExpenses)
+  },
+  {
+    id: 'budget',
+    label: 'Budget',
+    component: markRaw(Budget)
   },
   {
     id: 'current',
@@ -83,5 +89,5 @@ const tabs = [
   },
 ]
 
-const activeTab = ref(tabs[2])
+const activeTab = ref(tabs[3])
 </script>

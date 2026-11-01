@@ -445,7 +445,6 @@ class DatabaseSeeder extends Seeder
             'planned_income_id'     => '2',
             'frequency'     => 'monthly',
             'amount'        => 200,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 3,
             'account_taken_from'  => 'RBC',
@@ -464,7 +463,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '2',
             'frequency'     => 'monthly',
             'amount'        => 300,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 15,
             'account_taken_from'  => 'RBC',
@@ -483,7 +481,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '3',
             'frequency'     => 'monthly',
             'amount'        => 500,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 28,
             'account_taken_from'  => 'RBC',
@@ -504,7 +501,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '1',
             'frequency'     => 'monthly',
             'amount'        => 1771.12,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 23,
             'account_taken_from'  => 'RBC',
@@ -514,7 +510,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '1',
             'frequency'     => 'monthly',
             'amount'        => 1971.12,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 23,
             'account_taken_from'  => 'RBC',
@@ -533,7 +528,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '2',
             'frequency'     => 'monthly',
             'amount'        => 159.46,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 5,
             'effective_date'    => '2026-01-01',
@@ -551,7 +545,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '3',
             'frequency'     => 'monthly',
             'amount'        => 259.60,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 5,
             'effective_date'    => '2026-01-01',
@@ -569,7 +562,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '4',
             'frequency'     => 'monthly',
             'amount'        => 333.96,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 15,
             'effective_date'    => '2026-01-01',
@@ -587,7 +579,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '5',
             'frequency'     => 'monthly',
             'amount'        => 315,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'manual',
             'day_due_for_monthly'       => 25,
             'effective_date'    => '2026-01-01',
@@ -605,7 +596,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '6',
             'frequency'     => 'monthly',
             'amount'        => 80,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'manual',
             'day_due_for_monthly'       => 25,
             'effective_date'    => '2026-01-01',
@@ -623,7 +613,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '7',
             'frequency'     => 'monthly',
             'amount'        => 200,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 25,
             'effective_date'    => '2026-01-01',
@@ -641,7 +630,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '8',
             'frequency'     => 'monthly',
             'amount'        => 420,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 20,
             'effective_date'    => '2026-01-01',
@@ -660,7 +648,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '9',
             'frequency'     => 'monthly',
             'amount'        => 50,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'manual',
             'day_due_for_monthly'       => 31,
             'effective_date'    => '2026-01-01',
@@ -669,7 +656,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '9',
             'frequency'     => 'monthly',
             'amount'        => 60,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'manual',
             'day_due_for_monthly'       => 31,
             'effective_date'    => '2026-10-25',
@@ -678,7 +664,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '9',
             'frequency'     => 'monthly',
             'amount'        => 70,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'manual',
             'day_due_for_monthly'       => 31,
             'effective_date'    => '2026-10-31',
@@ -696,7 +681,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '10',
             'frequency'     => 'monthly',
             'amount'        => 90,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 1,
             'effective_date'    => '2026-01-01',
@@ -715,7 +699,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '11',
             'frequency'     => 'monthly',
             'amount'        => 20,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'day_due_for_monthly'       => 31,
             'effective_date'    => '2026-01-01',
@@ -733,7 +716,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '12',
             'frequency'     => 'monthly',
             'amount'        => 28,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'account_taken_from'  => 'WM card',
             'day_due_for_monthly'       => 22,
@@ -752,7 +734,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '13',
             'frequency'     => 'monthly',
             'amount'        => 25.98,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'account_taken_from'  => 'WM card',
             'day_due_for_monthly'       => 26,
@@ -771,7 +752,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '14',
             'frequency'     => 'monthly',
             'amount'        => 14.68,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'account_taken_from'  => 'WM card',
             'day_due_for_monthly'       => 10,
@@ -790,7 +770,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '15',
             'frequency'     => 'monthly',
             'amount'        => 28,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'automatic',
             'account_taken_from'  => 'WM card',
             'day_due_for_monthly'       => 12,
@@ -809,7 +788,6 @@ class DatabaseSeeder extends Seeder
             'planned_expense_id'    => '16',
             'frequency'     => 'monthly',
             'amount'        => 260,
-            'fixed_or_variable' => 'fixed',
             'manual_or_automatic'  => 'manual',
             'day_due_for_monthly'       => 28,
             'effective_date'    => '2026-01-01',
@@ -817,137 +795,203 @@ class DatabaseSeeder extends Seeder
 
 
 
-
-
-        
-        /*        
-        \App\Models\PlannedExpense::create([
+         
+        \App\Models\PlannedBudget::create([
             'description'   => 'Groceries',
-            'amount'        => 340,
-            'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 1,
+            'amount'        => 200,
+            'frequency'     => 'weekly',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Garbage tags',
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 2,
             'amount'        => 10,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Gas',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Gas',
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 3,
             'amount'        => 85,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Allan',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Allan',
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 3,
             'amount'        => 80,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Marianne',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Marianne',
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 4,
             'amount'        => 60,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
-            'user_id'       => 1,
+            'effective_date'    => '2026-01-01',
         ]);
-        \App\Models\PlannedExpense::create([
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Brianna',
-            'amount'        => 0,
-            'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 5,
+            'amount'        => 0,
+            'frequency'     => 'weekly',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Autumn',
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 6,
             'amount'        => 0,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
-            'user_id'       => 1,
+            'effective_date'    => '2026-01-01',
         ]);
-        \App\Models\PlannedExpense::create([
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Kristen',
-            'amount'        => 20,
-            'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 7,
+            'amount'        => 20,
+            'frequency'     => 'weekly',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Caragh',
-            'amount'        => 20,
-            'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 8,
+            'amount'        => 20,
+            'frequency'     => 'weekly',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Angelica',
-            'amount'        => 20,
-            'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 9,
+            'amount'        => 20,
+            'frequency'     => 'weekly',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
             'description'   => 'Kids school',
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 10,
             'amount'        => 50,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Mass',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Mass',
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 11,
             'amount'        => 20,
             'frequency'     => 'weekly',
-            'fixed_or_variable' => 'variable',
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Gifts',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Gifts',
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 12,
             'amount'        => 630,
             'frequency'     => 'monthly',
-            'fixed_or_variable' => 'variable',
+            'day_due_for_monthly'   => 31,
+            'effective_date'    => '2026-01-01',
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Prescriptions',
+            'notes'       => 'notes',
             'user_id'       => 1,
         ]);
-        \App\Models\PlannedExpense::create([
-            'description'   => 'Prescriptions',
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 13,
             'amount'        => 35,
             'frequency'     => 'monthly',
-            'fixed_or_variable' => 'variable',
-            'user_id'       => 1,
+            'day_due_for_monthly'   => 31,
+            'effective_date'    => '2026-01-01',
         ]);
-        \App\Models\PlannedExpense::create([
+
+
+/*         \App\Models\PlannedExpense::create([
             'description'   => 'Weekly expense',
             'amount'        => 350,
             'frequency'     => 'weekly',
             'day_of_week_for_weekly_fixed' => 'Wednesday',
-            'fixed_or_variable' => 'variable',
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpense::create([
             'description'   => 'Quarterly expense',
             'amount'        => 350,
             'frequency'     => 'quarterly',
-            'fixed_or_variable' => 'variable',
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpense::create([
             'description'   => 'Yearly expense',
             'amount'        => 500,
             'frequency'     => 'yearly',
-            'fixed_or_variable' => 'variable',
             'user_id'       => 1,
         ]);
         \App\Models\PlannedExpense::create([
             'description'   => 'One-time expense',
             'amount'        => 1000,
             'frequency'     => 'one-time',
-            'fixed_or_variable' => 'variable',
             'user_id'       => 1,
-        ]); */
+        ]);  */
 
     }
 }
