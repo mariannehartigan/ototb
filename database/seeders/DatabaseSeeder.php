@@ -807,6 +807,12 @@ class DatabaseSeeder extends Seeder
             'frequency'     => 'weekly',
             'effective_date'    => '2026-01-01',
         ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 1,
+            'amount'        => 150,
+            'frequency'     => 'weekly',
+            'effective_date'    => '2026-11-15',
+        ]);
 
         \App\Models\PlannedBudget::create([
             'description'   => 'Garbage tags',
