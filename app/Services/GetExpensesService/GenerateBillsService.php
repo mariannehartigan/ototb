@@ -132,8 +132,8 @@ class GenerateBillsService
             return strcmp($a['date'], $b['date']);
         });
 
-        dd($expenses);
     }
+
 
     // generateBillsArray subfunction
     private function isRecurringDate(Carbon $date, ?string $anchorDate, int $intervalDays): bool {
