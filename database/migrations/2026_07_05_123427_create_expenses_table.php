@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('account_taken_from')->nullable();
             $table->string('manual_or_automatic')->nullable();
             $table->boolean('tithe')->nullable();
-            $table->boolean('automatically_generated_tithe')->default(false); // can this be removed?
+            $table->boolean('automatically_generated_tithe')->default(false);
+            $table->boolean('is_weekly_budget')->default(false);            
             $table->boolean('paid')->default(false);
             $table->text('notes')->nullable();
             $table->foreignIdFor(\App\Models\Income::class, 'income_id')->nullable()->references('id')->on('incomes');

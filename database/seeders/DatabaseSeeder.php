@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             'user_id'       => 1,
         ]);
 
+
+
 /*         \App\Models\PlannedIncome::create([
             'description'   => 'IncomeOne',
             'start_date'  => '2026-01-01',
@@ -99,7 +101,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-/*          \App\Models\PlannedIncome::create([
+          \App\Models\PlannedIncome::create([
             'description'   => 'Silver Lining Ventures',
             'start_date'  => '2026-01-01',
             'end_date'    => '2029-08-01',
@@ -305,10 +307,12 @@ class DatabaseSeeder extends Seeder
             'deposit_date_for_biweekly_quarterly_yearly_onetime'    => '2026-01-01',
             'effective_date'    => '2026-01-01',
             'tithe'         => true,
-        ]);  */
+        ]);  
 
 
-        \App\Models\PlannedIncome::create([
+
+
+/*         \App\Models\PlannedIncome::create([
             'description'   => 'Hack the Box',
             'start_date'  => '2026-10-01',
             'end_date'    => '2029-11-15',
@@ -426,7 +430,7 @@ class DatabaseSeeder extends Seeder
             'deposit_date_for_biweekly_quarterly_yearly_onetime' => '2027-07-01',
             'effective_date'    => '2027-01-01',
             'tithe'         => true,
-        ]);
+        ]); */
 
 
 

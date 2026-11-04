@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MakePlanService
 {
-    public function __construct(
+    public function __construct(      
         private InsertIncomesService $insertIncomesService,
         private GetExpensesService $getExpensesService,
         private InsertAutomaticTithesService $insertAutomaticTithesService,
@@ -23,4 +23,3 @@ class MakePlanService
         $this->balanceExpensesService->balanceExpenses($date);
     }
 }
-
