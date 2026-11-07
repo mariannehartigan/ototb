@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
+            $table->date('date')->nullable();
             $table->text('description')->nullable();
             $table->decimal('amount', 12, 2)->nullable();
             $table->text('frequency')->nullable();

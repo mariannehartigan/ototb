@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Setting extends Model
 {
-    protected $fillable = ['tithe', 'budget_day_of_week', 'budget_type'];
+    public function settingChanges(): HasMany {
+        return $this->hasMany(\App\Models\SettingChange::class);
+    }
 }

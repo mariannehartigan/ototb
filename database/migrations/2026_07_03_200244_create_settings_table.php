@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->boolean('tithe')->default(true);
-            $table->boolean('use_budget')->default(false);
-            $table->string('budget_day_of_week')->nullable();
-            $table->boolean('save_for_five_budget_months');
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
         });

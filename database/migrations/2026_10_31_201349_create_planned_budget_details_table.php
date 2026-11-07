@@ -21,7 +21,9 @@ return new class extends Migration
             $table->boolean('tithe')->default(false);
             $table->unsignedInteger('day_due_for_monthly')->nullable();
             $table->date('due_date_for_biweekly_quarterly_yearly_onetime')->nullable();
-            $table->date('effective_date')->default(now())->nullable();            
+            $table->date('effective_date')->default(now())->nullable();   
+            $table->date('last_date_before_change')->default(now())->nullable();   
+            $table->date('first_date_of_change')->default(now())->nullable();            
             $table->timestamps();
         });
     }

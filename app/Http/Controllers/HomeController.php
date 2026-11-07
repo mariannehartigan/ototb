@@ -84,7 +84,7 @@ $plannedFixedExpenses = PlannedExpense::with('plannedExpenseDetails')
     
 
     return inertia('Home', [
-      'settings' => Setting::all(),
+      'settings' => Setting::with('settingChanges')->get(),
       'plannedIncomes' => PlannedIncome::with('plannedIncomeDetails')->get(),
       'plannedFixedExpenses' => $plannedFixedExpenses,
       'incomes' => Income::all(),

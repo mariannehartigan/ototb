@@ -26,12 +26,24 @@ class DatabaseSeeder extends Seeder
 
         
         \App\Models\Setting::create([
+            'user_id'       => 1,
+        ]);
+        \App\Models\SettingChange::create([
+            'setting_id'    => 1,
             'tithe'         => true,
             'use_budget'    => true,
             'budget_day_of_week'    => 'Friday',
             'save_for_five_budget_months'   => true,
-            'user_id'       => 1,
-        ]);
+        ]);      
+        \App\Models\SettingChange::create([
+            'setting_id'    => 1,
+            'tithe'         => true,
+            'use_budget'    => true,
+            'budget_day_of_week'    => 'Monday',
+            'save_for_five_budget_months'   => true,
+            'last_date_before_change'   => '2026-11-06',
+            'first_date_of_change'  => '2026-11-09',
+        ]);   
 
 
 
@@ -816,6 +828,8 @@ class DatabaseSeeder extends Seeder
             'amount'        => 150,
             'frequency'     => 'weekly',
             'effective_date'    => '2026-11-15',
+            'last_date_before_change' => '2026-11-20',
+            'first_date_of_change'  => '2026-11-21'
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -1002,6 +1016,50 @@ class DatabaseSeeder extends Seeder
             'frequency'     => 'one-time',
             'user_id'       => 1,
         ]);  */
+
+/*         \App\Models\Expense::create([
+            'description'   => 'Budget Oct 16',
+            'date'          => '2026-10-16',
+            'is_weekly_budget'   => true,
+            'amount'        => 350,
+            'user_id'       => 1,
+        ]);
+                \App\Models\Expense::create([
+            'description'   => 'Budget Oct 23',
+            'date'          => '2026-10-23',
+            'is_weekly_budget'   => true,
+            'amount'        => 350,
+            'user_id'       => 1,
+        ]);
+                \App\Models\Expense::create([
+            'description'   => 'Budget Oct 30',
+            'date'          => '2026-10-30',
+            'is_weekly_budget'   => true,
+            'amount'        => 350,
+            'user_id'       => 1,
+        ]);
+                \App\Models\Expense::create([
+            'description'   => 'Budget Nov 6',
+            'date'          => '2026-11-6',
+            'is_weekly_budget'   => true,
+            'amount'        => 350,
+            'user_id'       => 1,
+        ]);
+                \App\Models\Expense::create([
+            'description'   => 'Budget Nov 13',
+            'date'          => '2026-11-13',
+            'is_weekly_budget'   => true,
+            'amount'        => 350,
+            'user_id'       => 1,
+        ]); */
+
+        \App\Models\Expense::create([
+            'description'   => 'Budget Nov 6',
+            'user_id'       => 1,
+            'date'          => '2026-11-06',
+            'amount'        => 625,
+            'is_weekly_budget' => true,
+        ]);
 
     }
 }

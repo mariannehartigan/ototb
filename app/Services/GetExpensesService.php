@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Services\GetExpensesService\GenerateBillsService;
 use App\Services\GetExpensesService\GenerateBudgetsService;
-use App\Models\Setting;
 
 class GetExpensesService
 {
@@ -18,8 +17,6 @@ class GetExpensesService
     public function getExpenses(Carbon $date):array {
 
         $expenses = [];
-
-        $settings = Setting::where('user_id', Auth::id())->first();
 
         $this->generateBillsService->generateBillsArray($date, $expenses);
 
