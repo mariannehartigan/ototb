@@ -1056,6 +1056,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Expense::create([
             'description'   => 'Budget Nov 6',
             'user_id'       => 1,
+            'month_year'    => '2026-10-01',
             'date'          => '2026-11-06',
             'amount'        => 625,
             'is_weekly_budget' => true,

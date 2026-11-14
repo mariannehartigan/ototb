@@ -37,39 +37,39 @@ class GenerateBudgetsService {
             ->exists();
 
         // find date of first budget
-        if (!$previousBudgetsExist) { // should end with no !... if ! then first runs
+        if ($previousBudgetsExist) { // should end with no !... if ! then first runs
 
             $lastBudgetDatePreviousMonth = Expense::where('user_id', Auth::id())
                 ->where('is_weekly_budget', true)
-                ->where('date', '<', $date->copy()->startOfMonth())
+                ->whereDate('month_year', $date->copy()->subMonthNoOverflow()->startOfMonth())
                 ->latest('date')
                 ->first()?->date;
 
             $nextDate = Carbon::parse($lastBudgetDatePreviousMonth)->addDay();
 
             $firstBudgetDate = $this->findBudgetDates($nextDate, 1)[0] ?? null;
-            
-            dd($firstBudgetDate);
+            dd($firstBudgetDate, 'based on previous month');
 
-            // make array of dates of month that will need a budget using $firstBudgetDayOfMonth
-
-        } else { // new account setup
+/*         } else { // new account setup
             // findFirstBudgetDayOfMonth
             $firstBudgetDay = $this->findFirstBudgetDayNewAccount($date);
 
             $firstBudgetDate = $date->copy()
                 ->startOfMonth()
                 ->addDays($firstBudgetDay - 1);
+            dd($firstBudgetDate, 'setting up account');
 
-            dd($firstBudgetDate);
+        } */
 
+        } else {
 
-            // make array of dates of month that will need a budget using $firstBudgetDayOfMonth
-        }
+    $firstBudgetDate = $this->findFirstBudgetDayNewAccount($date);
+
+}
 
             
-            // make array of dates of month that will need a budget
-            // -> also going to have to take into account future changes!!!
+        // make array of dates of month that will need a budget
+        // -> also going to have to take into account future changes!!! - use $firstBudgetDate
 
         // then take the array from either if statement and make an array of budgets to be put into expenses table
     }
@@ -143,7 +143,7 @@ class GenerateBudgetsService {
             return $budgetDates;
         }
 
-    private function findFirstBudgetDayNewAccount(Carbon $date): int {
+    /* private function findFirstBudgetDayNewAccount(Carbon $date): int {
         
         $incomes = array_values(array_filter(
             $this->getIncomesService->getIncomes($date, useWorstCaseDates: true),
@@ -193,7 +193,91 @@ class GenerateBudgetsService {
             }
         }
         return $daysInMonth;
+    } */
+
+
+
+private function findFirstBudgetDayNewAccount(Carbon $date): Carbon
+{
+    $incomes = array_values(array_filter(
+        $this->getIncomesService->getIncomes(
+            $date,
+            useWorstCaseDates: true
+        ),
+        fn ($income) => in_array(
+            $income['frequency'],
+            ['weekly', 'biweekly', 'monthly'],
+            true
+        )
+    ));
+
+    $daysInMonth = $date->daysInMonth;
+    $incomesByDay = array_fill(1, $daysInMonth, 0);
+
+    // Organize incomes by deposit day.
+    foreach ($incomes as $income) {
+        $day = Carbon::parse($income['date'])->day;
+        $incomesByDay[$day] += (float) $income['amount'];
     }
+
+    $totalIncome = array_sum($incomesByDay);
+
+    // Calculate cumulative income for each day.
+    $cumulativeIncome = [];
+    $runningTotal = 0;
+
+    for ($day = 1; $day <= $daysInMonth; $day++) {
+        $runningTotal += $incomesByDay[$day];
+        $cumulativeIncome[$day] = $runningTotal;
+    }
+
+    $monthStart = $date->copy()->startOfMonth();
+    $monthEnd = $date->copy()->endOfMonth();
+
+    // Get actual budget dates, including dates in the next month.
+    $budgetDates = $this->findBudgetDates($monthStart, 10);
+
+    // Try each possible starting budget date.
+    foreach ($budgetDates as $startIndex => $firstBudgetDate) {
+
+        // We need four budget dates to test the thresholds.
+        $fourBudgetDates = array_slice($budgetDates, $startIndex, 4);
+
+        if (count($fourBudgetDates) < 4) {
+            break;
+        }
+
+        $valid = true;
+
+        foreach ($fourBudgetDates as $index => $budgetDate) {
+
+            // Use only income from the requested month.
+            if ($budgetDate->gt($monthEnd)) {
+                $dayToCheck = $daysInMonth;
+            } else {
+                $dayToCheck = $budgetDate->day;
+            }
+
+            $incomeReceived = $cumulativeIncome[$dayToCheck];
+
+            // 25%, 50%, 75%, 100%.
+            $requiredIncome = $totalIncome * (($index + 1) / 4);
+
+            if ($incomeReceived < $requiredIncome - 0.001) {
+                $valid = false;
+                break;
+            }
+        }
+
+        if ($valid) {
+            return $firstBudgetDate->copy();
+        }
+    }
+
+    throw new \RuntimeException('No valid first budget date found.');
+}
+
+
 
 
     private function findNumberOfBudgetsInMonth(Carbon $date): int
@@ -259,28 +343,5 @@ class GenerateBudgetsService {
 
         return count($arrayOfBudgetDates);
     }
-
-
-
-/*     private function findNumberOfBudgetsInMonth(Carbon $date): int {
-           
-            $budgetDayOfWeek = Setting::where('user_id', Auth::id())
-                ->first()
-                ?->settingChanges()
-                ->orderByDesc('first_date_of_change')
-                ->value('budget_day_of_week');
-
-            $arrayOfBudgetDates = [];
-            $currentDateIteration = $date->copy()->startOfMonth();
-            while ($date->month === $currentDateIteration->month) {
-                if ($currentDateIteration->format('l') === $budgetDayOfWeek) {
-                    $arrayOfBudgetDates[] = $currentDateIteration->day;
-                }
-                $currentDateIteration->addDay();
-            }
-            $numberOfBudgetsInMonth = count($arrayOfBudgetDates);
-
-            return $numberOfBudgetsInMonth;
-    } */
-    
+   
 }
