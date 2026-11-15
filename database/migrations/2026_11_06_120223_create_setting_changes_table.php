@@ -17,8 +17,9 @@ return new class extends Migration
             $table->boolean('tithe')->default(true);
             $table->boolean('use_budget')->default(false);
             $table->string('budget_day_of_week')->nullable();
-            $table->boolean('save_for_five_budget_months');            $table->date('last_date_before_change')->default(now())->nullable();
-            $table->date('first_date_of_change')->default(now())->nullable();    
+            $table->boolean('save_for_five_budget_months');
+            $table->date('last_date_before_change')->nullable();
+            $table->date('first_date_of_change')->nullable();    
             $table->timestamps();
         });
     }

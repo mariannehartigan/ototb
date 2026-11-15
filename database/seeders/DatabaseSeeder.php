@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'vilt.test.inactive@gmail.com',
         ]);
 
-        
+
         \App\Models\Setting::create([
             'user_id'       => 1,
         ]);
@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
             'use_budget'    => true,
             'budget_day_of_week'    => 'Friday',
             'save_for_five_budget_months'   => true,
+            'last_date_before_change'      => null,
+            'first_date_of_change'         => null,            
         ]);      
         \App\Models\SettingChange::create([
             'setting_id'    => 1,
@@ -43,6 +45,15 @@ class DatabaseSeeder extends Seeder
             'save_for_five_budget_months'   => true,
             'last_date_before_change'   => '2026-11-06',
             'first_date_of_change'  => '2026-11-09',
+        ]);   
+        \App\Models\SettingChange::create([
+            'setting_id'    => 1,
+            'tithe'         => true,
+            'use_budget'    => true,
+            'budget_day_of_week'    => 'Wednesday',
+            'save_for_five_budget_months'   => true,
+            'last_date_before_change'   => '2026-11-16',
+            'first_date_of_change'  => '2026-11-25',
         ]);   
 
 
