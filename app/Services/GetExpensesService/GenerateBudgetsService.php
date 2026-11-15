@@ -51,10 +51,12 @@ class GenerateBudgetsService {
             }
 
         $numberOfBudgetsInMonth = $this->findNumberOfBudgetsInMonth($date);
-        dd($numberOfBudgetsInMonth);
 
-        $nextBudgetDates = $this->findNextBudgetDates($firstBudgetDate, $numberOfBudgetsInMonth);
-        dd($nextBudgetDates);
+        $budgetDates = $this->findBudgetDates($firstBudgetDate, $numberOfBudgetsInMonth);
+        dd($budgetDates);
+
+        // $nextBudgetDates = $this->findNextBudgetDates($firstBudgetDate, $numberOfBudgetsInMonth);
+        // dd($nextBudgetDates);
         
     }
 
@@ -73,7 +75,7 @@ class GenerateBudgetsService {
     }
 
 
-    private function findBudgetDates(Carbon $startDate, int $numberOfBudgets = 4): array
+    private function findBudgetDates(Carbon $startDate, int $numberOfBudgets): array
         {
             $setting = Setting::with(['settingChanges' => function ($query) {
                 $query->orderBy('id');
@@ -292,7 +294,7 @@ private function findNumberOfBudgetsInMonth(Carbon $date): int
 
 
 
-private function findNextBudgetDates(
+/* private function findNextBudgetDates(
     Carbon $firstBudgetDate,
     int $numberOfBudgetsInMonth
 ): array {
@@ -366,7 +368,7 @@ private function findNextBudgetDates(
     }
 
     return $budgetDates;
-}
+} */
 
 
    
