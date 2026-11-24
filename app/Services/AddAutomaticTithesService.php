@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InsertAutomaticTithesService
 {
-    public function insertAutomaticTithes (Carbon $date) {
+    public function addAutomaticTithes (Carbon $date) {
         
     }
 }

@@ -1,58 +1,52 @@
 <template>
-  <!--Heading-->
-  <div class="upcomingFixedExpenseRow upcomingFixedExpenseHeading">
+    <!--Heading-->
+    <div class="upcomingFixedExpenseRow upcomingFixedExpenseHeading">
 
-    <div class="upcomingFixedExpenseDescriptionCol">
-        Description
-    </div>
+        <div class="upcomingFixedExpenseDescriptionCol">
+            Description
+        </div>
 
-    <div class="upcomingFixedExpenseFrequencyCol">
-        Frequency
-    </div>
+        <div class="upcomingFixedExpenseFrequencyCol">
+            Frequency
+        </div>
 
-    <div class="upcomingFixedExpenseAmountCol">
-        Amount
-    </div>
+        <div class="upcomingFixedExpenseAmountCol">
+            Amount
+        </div>
 
-    <div class="upcomingFixedExpenseDueCol">
-        Due
-    </div>
-    
-    <div class="upcomingFixedExpenseFromAccountCol">
-        From account
-    </div>
-
-    <div class="upcomingFixedExpenseAssignedToIncomeCol">
-        Assigned to Income
-    </div>
-
-    <div class="upcomingFixedExpenseEffectiveDateCol">
+        <div class="upcomingFixedExpenseDueCol">
+            Due
+        </div>
         
+        <div class="upcomingFixedExpenseFromAccountCol">
+            From account
+        </div>
+
+        <div class="upcomingFixedExpenseAssignedToIncomeCol">
+            Assigned to Income
+        </div>
+
+        <div class="upcomingFixedExpenseEffectiveDateCol">
+            
+        </div>
+
+        <div class="upcomingFixedExpenseEndDateCol">
+            End Date
+        </div>
+
+        <div class="upcomingFixedExpenseTitheCol">
+            Tithe
+        </div>
+
+        <div class="upcomingFixedExpenseNotesCol">
+            Notes
+        </div>
+
+        <div class="upcomingFixedExpenseAddCol">
+        </div>
+
     </div>
 
-    <div class="upcomingFixedExpenseEndDateCol">
-        End Date
-    </div>
-
-    <div class="upcomingFixedExpenseTitheCol">
-        Tithe
-    </div>
-
-    <div class="upcomingFixedExpenseNotesCol">
-        Notes
-    </div>
-
-    <div class="upcomingFixedExpenseAddCol">
-    </div>
-
-  </div>
-
-<!--     <UpcomingFixedExpenseReadUpdate type="readUpdateCurrentFixedExpense"
-      v-for="plannedFixedExpense in plannedFixedExpenses" 
-      :key="plannedFixedExpense.id"
-      :plannedFixedExpense="plannedFixedExpense"
-      :details="plannedFixedExpense.planned_expense_details"
-    /> -->
 
     <UpcomingFixedExpenseReadUpdate
         type="readUpdateCurrentFixedExpense"

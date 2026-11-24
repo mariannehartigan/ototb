@@ -10,16 +10,16 @@ class MakePlanService
     public function __construct(      
         private InsertIncomesService $insertIncomesService,
         private GetExpensesService $getExpensesService,
-        private InsertAutomaticTithesService $insertAutomaticTithesService,
+        private AddAutomaticTithesService $addAutomaticTithesService,
         private InitialExpenseAssignmentService $initialExpenseAssignmentService,
         private BalanceExpensesService $balanceExpensesService,
     ) {}
 
     public function makePlan(Carbon $date): void {
         $this->insertIncomesService->insertIncomes($date);
-        $this->getExpensesService->getExpenses($date);
-        $this->insertAutomaticTithesService->insertAutomaticTithes($date);
-        $this->initialExpenseAssignmentService->initialExpenseAssignment($date);
-        $this->balanceExpensesService->balanceExpenses($date);
+        $expenses = $this->getExpensesService->getExpenses($date);
+        $this->addAutomaticTithesService->insertAutomaticTithes($date);
+        $expenses = $this->initialExpenseAssignmentService->initialExpenseAssignment($date, $expenses);
+        $expenses = $this->balanceExpensesService->balanceExpenses($date);
     }
 }

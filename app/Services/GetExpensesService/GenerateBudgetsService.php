@@ -5,7 +5,6 @@ namespace App\Services\GetExpensesService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Expense;
-use App\Models\PlannedBudget;
 use App\Models\Setting;
 use App\Services\GetIncomesService;
 
@@ -17,16 +16,6 @@ class GenerateBudgetsService {
 
     public function generateBudgetsArray(Carbon $date, array &$expenses): void {
 
-        $plannedBudgets = PlannedBudget::with('plannedBudgetDetails')
-            ->where('user_id', Auth::id())
-            ->get();
-
-        $settings = Setting::with('settingChanges')
-            ->where('user_id', Auth::id())
-            ->first();
-
-        $firstBudgetDayOfMonth = ($date);
-
         $previousBudgetsExist = Expense::where('user_id', Auth::id())
             ->where('is_weekly_budget', true)
             ->whereBetween('date', [
@@ -35,29 +24,18 @@ class GenerateBudgetsService {
             ])
             ->exists();
 
-
-        // find $firstBudgetDAte
         if (!$previousBudgetsExist) { // should end with no !... if ! then first runs
             $firstBudgetDate = $this->findFirstBudgetDateExistingAccount($date);
-/*             $lastBudgetDatePreviousMonth = Expense::where('user_id', Auth::id())
-                ->where('is_weekly_budget', true)
-                ->whereDate('month_year', $date->copy()->subMonthNoOverflow()->startOfMonth())
-                ->latest('date')
-                ->first()?->date;
-            $nextDate = Carbon::parse($lastBudgetDatePreviousMonth)->addDay();
-            $firstBudgetDate = $this->findBudgetDates($nextDate, 1)[0] ?? null; */
         } else {
             $firstBudgetDate = $this->findFirstBudgetDateNewAccount($date);
-            }
+        }
 
         $numberOfBudgetsInMonth = $this->findNumberOfBudgetsInMonth($date);
 
         $budgetDates = $this->findBudgetDates($firstBudgetDate, $numberOfBudgetsInMonth);
-        dd($budgetDates);
 
-        // $nextBudgetDates = $this->findNextBudgetDates($firstBudgetDate, $numberOfBudgetsInMonth);
-        // dd($nextBudgetDates);
-        
+        $this->pushBudgets($date, $budgetDates, $expenses);
+
     }
 
     private function findFirstBudgetDateExistingAccount(Carbon $date) {
@@ -105,8 +83,6 @@ class GenerateBudgetsService {
 
                     $nextChange = $changes->get($index + 1);
 
-                    // Stop using this setting after the next change's
-                    // last_date_before_change.
                     if (
                         $nextChange?->last_date_before_change &&
                         $currentDate->gt(
@@ -116,7 +92,6 @@ class GenerateBudgetsService {
                         continue;
                     }
 
-                    // Don't use the new setting before its start date.
                     if (
                         $change->first_date_of_change &&
                         $currentDate->lt(
@@ -291,85 +266,188 @@ private function findNumberOfBudgetsInMonth(Carbon $date): int
 }
 
 
+/* private function pushBudgets(Carbon $date, array $budgetDates, array &$expenses): void {
 
-
-
-/* private function findNextBudgetDates(
-    Carbon $firstBudgetDate,
-    int $numberOfBudgetsInMonth
-): array {
-    if ($numberOfBudgetsInMonth <= 0) {
-        return [];
-    }
-
-    $setting = Setting::with(['settingChanges' => function ($query) {
-        $query->orderBy('id');
-    }])
-        ->where('user_id', Auth::id())
-        ->first();
-
-    if (!$setting) {
-        return [];
-    }
-
-    $changes = $setting->settingChanges;
-
-    // Include the first budget date in the array.
-    $budgetDates = [$firstBudgetDate->copy()];
-
-    // Start searching the day after the first budget.
-    $currentDate = $firstBudgetDate->copy()->addDay();
-
-    $endDate = $currentDate->copy()->addMonths(3);
-
-    while (
-        $currentDate->lte($endDate) &&
-        count($budgetDates) < $numberOfBudgetsInMonth
-    ) {
-        $activeChange = null;
-
-        foreach ($changes as $index => $change) {
-
-            $nextChange = $changes->get($index + 1);
-
-            // Check when the previous setting ends.
-            if (
-                $nextChange?->last_date_before_change &&
-                $currentDate->gt(
-                    Carbon::parse($nextChange->last_date_before_change)
-                )
-            ) {
-                continue;
-            }
-
-            // Check when the new setting begins.
-            if (
-                $change->first_date_of_change &&
-                $currentDate->lt(
-                    Carbon::parse($change->first_date_of_change)
-                )
-            ) {
-                continue;
-            }
-
-            $activeChange = $change;
-            break;
+    $weeklyBudgetAmount = \App\Models\PlannedBudgetDetail::whereHas(
+        'plannedBudget',
+        function ($query) {
+            $query->where('user_id', Auth::id());
         }
+    )
+        ->where('frequency', 'weekly')
+        ->sum('amount');
 
-        if (
-            $activeChange?->use_budget &&
-            $currentDate->englishDayOfWeek ===
-                $activeChange->budget_day_of_week
-        ) {
-            $budgetDates[] = $currentDate->copy();
-        }
+    foreach ($budgetDates as $budgetDate) {
 
-        $currentDate->addDay();
+        $expenses[] = [
+            'description' => 'Budget ' . $budgetDate->format('F j'),
+            'amount' => $weeklyBudgetAmount,
+            'date' => $budgetDate->toDateString(),
+            'month_year' => $date->copy()->startOfMonth()->toDateString(),
+            'day_due' => $budgetDate->day,
+            'automatic_payment' => false,
+            'account_taken_from' => 'debit',
+            'notes' => null,
+            'tithe' => false,
+            'income_id' => null,
+            'is_weekly_budget' => true,
+            'user_id' => Auth::id(),
+        ];
     }
-
-    return $budgetDates;
 } */
 
 
-   
+private function pushBudgets(
+    Carbon $date,
+    array $budgetDates,
+    array &$expenses
+): void {
+
+    $monthStart = $date->copy()->startOfMonth();
+    $monthEnd = $date->copy()->endOfMonth();
+
+    $plannedBudgets = \App\Models\PlannedBudget::with('plannedBudgetDetails')
+        ->where('user_id', Auth::id())
+        ->get();
+
+    // WEEKLY BUDGETS
+    // Combine all weekly budgets into one amount for each budget date.
+
+    foreach ($budgetDates as $budgetDate) {
+
+        $weeklyBudgetAmount = 0;
+
+        foreach ($plannedBudgets as $plannedBudget) {
+
+            $detail = $plannedBudget->plannedBudgetDetails
+                ->filter(function ($detail) use ($budgetDate) {
+                    return (
+                        !$detail->first_date_of_change ||
+                        Carbon::parse($detail->first_date_of_change)->lte($budgetDate)
+                    );
+                })
+                ->sortByDesc('first_date_of_change')
+                ->first();
+
+            if ($detail?->frequency === 'weekly') {
+                $weeklyBudgetAmount += (float) $detail->amount;
+            }
+        }
+
+        $expenses[] = [
+            'description' => 'Budget ' . $budgetDate->format('F j'),
+            'amount' => $weeklyBudgetAmount,
+            'date' => $budgetDate->toDateString(),
+            'month_year' => $monthStart->toDateString(),
+            'day_due' => $budgetDate->day,
+            'automatic_payment' => false,
+            'account_taken_from' => 'debit',
+            'notes' => null,
+            'tithe' => false,
+            'income_id' => null,
+            'is_weekly_budget' => true,
+            'user_id' => Auth::id(),
+        ];
+    }
+
+    // MONTHLY, QUARTERLY, YEARLY AND ONE-TIME BUDGETS
+    // Add each budget individually.
+
+    foreach ($plannedBudgets as $plannedBudget) {
+
+        $currentDate = $monthStart->copy();
+
+        while ($currentDate->lte($monthEnd)) {
+
+            $detail = $plannedBudget->plannedBudgetDetails
+                ->filter(function ($detail) use ($currentDate) {
+                    return (
+                        !$detail->first_date_of_change ||
+                        Carbon::parse($detail->first_date_of_change)->lte($currentDate)
+                    );
+                })
+                ->sortByDesc('first_date_of_change')
+                ->first();
+
+            if (!$detail) {
+                $currentDate->addDay();
+                continue;
+            }
+
+            $isDue = false;
+
+            switch ($detail->frequency) {
+
+                case 'monthly':
+                    $day = min(
+                        $detail->day_for_monthly,
+                        $currentDate->daysInMonth
+                    );
+
+                    $isDue = $currentDate->day === $day;
+                    break;
+
+                case 'quarterly':
+                case 'yearly':
+
+                    $anchorDate = $detail->date_for_biweekly_quarterly_yearly_onetime;
+
+                    if ($anchorDate) {
+
+                        $anchor = Carbon::parse($anchorDate);
+
+                        $intervalMonths = $detail->frequency === 'quarterly'
+                            ? 3
+                            : 12;
+
+                        $monthsDifference =
+                            ($currentDate->year - $anchor->year) * 12 +
+                            ($currentDate->month - $anchor->month);
+
+                        if (
+                            $currentDate->gte($anchor) &&
+                            $monthsDifference >= 0 &&
+                            $monthsDifference % $intervalMonths === 0
+                        ) {
+                            $expectedDate = $anchor->copy()
+                                ->addMonthsNoOverflow($monthsDifference);
+
+                            $isDue = $currentDate->isSameDay($expectedDate);
+                        }
+                    }
+                    break;
+
+                case 'onetime':
+                    $anchorDate = $detail->date_for_biweekly_quarterly_yearly_onetime;
+
+                    $isDue = $anchorDate &&
+                        $currentDate->isSameDay(Carbon::parse($anchorDate));
+                    break;
+            }
+
+            if ($isDue) {
+
+                $expenses[] = [
+                    'description' => $plannedBudget->description,
+                    'amount' => (float) $detail->amount,
+                    'date' => $currentDate->toDateString(),
+                    'month_year' => $monthStart->toDateString(),
+                    'day_due' => $currentDate->day,
+                    'automatic_payment' => false,
+                    'account_taken_from' => $detail->account_taken_from,
+                    'notes' => $plannedBudget->notes,
+                    'tithe' => false,
+                    'income_id' => null,
+                    'planned_budget_id' => $plannedBudget->id,
+                    'planned_budget_detail_id' => $detail->id,
+                    'is_weekly_budget' => false,
+                    'user_id' => Auth::id(),
+                ];
+            }
+
+            $currentDate->addDay();
+        }
+    }
+}
+
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Models\PlannedIncome;
 use App\Models\PlannedExpense;
+use App\Models\PlannedBudget;
 use App\Models\Income;
 use App\Models\Expense;
 
@@ -80,13 +81,70 @@ $plannedFixedExpenses = PlannedExpense::with('plannedExpenseDetails')
 
         return $expense;
     });
-    
-    
 
+    $plannedBudgets = PlannedBudget::with('plannedBudgetDetails')
+        ->get()
+        ->map(function ($budget) use ($today) {
+
+            $details = $budget->plannedBudgetDetails;
+
+            $validDetails = $details->filter(function ($detail) use ($today) {
+                return $detail->first_date_of_change === null ||
+                    $detail->first_date_of_change <= $today;
+            });
+
+            $currentDetails = collect();
+
+            if ($validDetails->isNotEmpty()) {
+                $currentDetails->push(
+                    $validDetails->sortByDesc('first_date_of_change')->first()
+                );
+            }
+
+            $futureDetails = $details
+                ->filter(function ($detail) use ($today) {
+                    return $detail->first_date_of_change !== null &&
+                        $detail->first_date_of_change > $today;
+                })
+                ->sortBy('first_date_of_change')
+                ->values();
+
+            $budget->setAttribute('current_details', $currentDetails->values());
+            $budget->setAttribute('future_details', $futureDetails);
+
+            return $budget;
+        });
+
+    $plannedBudgetsWeekly = $plannedBudgets
+        ->filter(fn ($budget) => $budget->current_details->first()?->frequency === 'weekly')
+        ->values();
+
+    $plannedBudgetsMonthly = $plannedBudgets
+        ->filter(fn ($budget) => $budget->current_details->first()?->frequency === 'monthly')
+        ->values();
+
+    $plannedBudgetsQuarterly = $plannedBudgets
+        ->filter(fn ($budget) => $budget->current_details->first()?->frequency === 'quarterly')
+        ->values();
+
+    $plannedBudgetsYearly = $plannedBudgets
+        ->filter(fn ($budget) => $budget->current_details->first()?->frequency === 'yearly')
+        ->values();
+
+    $plannedBudgetsOneTime = $plannedBudgets
+        ->filter(fn ($budget) => $budget->current_details->first()?->frequency === 'onetime')
+        ->values();
+
+    
     return inertia('Home', [
       'settings' => Setting::with('settingChanges')->get(),
       'plannedIncomes' => PlannedIncome::with('plannedIncomeDetails')->get(),
       'plannedFixedExpenses' => $plannedFixedExpenses,
+      'plannedBudgetsWeekly' => $plannedBudgetsWeekly,
+      'plannedBudgetsMonthly' => $plannedBudgetsMonthly,
+      'plannedBudgetsQuarterly' => $plannedBudgetsQuarterly,
+      'plannedBudgetsYearly' => $plannedBudgetsYearly,
+      'plannedBudgetsOneTime' => $plannedBudgetsOneTime,
       'incomes' => Income::all(),
       'expenses' => Expense::all(),
       'incomesWithExpenses' => $incomesWithExpenses,

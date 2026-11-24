@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InitialExpenseAssignmentService
 {
-    public function initialExpenseAssignment(Carbon $date) {
+    public function initialExpenseAssignment(Carbon $date, array $expenses) {
         
     }
 }

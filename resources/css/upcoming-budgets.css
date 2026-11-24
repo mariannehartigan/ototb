@@ -1,0 +1,128 @@
+.upcomingBudgetRow {
+    display: grid;
+    grid-template-columns:
+        10vw    /* Description */
+        6vw     /* Amount */
+        8vw    /* Day Available */
+        10vw    /* Assigned to Income */
+        5vw     /* Tithe */
+        10vw    /* Last date before change */
+        10vw    /* First date of change */
+        10vw    /* End Date */
+        7vw     /* Notes */
+        5vw;    /* Done */
+    align-items: start;
+}
+
+/* .upcomingBudgetRow > div {
+    border: 1px solid red;
+} */
+
+.upcomingBudgetHeading {
+    padding-bottom: 0.5vw;
+    color: #558B2F;
+}
+
+.upcomingBudgetDescriptionCol {
+    width: 100%;
+}
+
+.upcomingBudgetFrequencyCol {
+    width: 100%;
+}
+
+.upcomingBudgetAmountCol {
+    width: 100%;
+}
+
+.upcomingBudgetDueCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingBudgetFromAccountCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingBudgetAssignedToIncomeCol {
+    width: 100%;
+    min-width: 0;
+}
+
+.upcomingBudgetEffectiveDateCol {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.upcomingBudgetEndDateCol {
+    width: 100%;
+}
+
+.upcomingBudgetTitheCol {
+    width: 100%;
+}
+
+.upcomingBudgetNotesCol {
+    width: 100%;
+}
+
+.upcomingBudgetAddCol {
+    width: 100%;
+}
+
+.upcomingBudgetDescriptionCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingBudgetFrequencyCol input,
+.upcomingBudgetFrequencyCol select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingBudgetAmountCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingBudgetDepositedCol > input {
+    width: 5vw;
+    box-sizing: border-box;
+}
+.depositDateInput {
+    width: 5vw;
+}
+
+.upcomingBudgetEffectiveDateCol input {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.upcomingBudgetEndDateCol input {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.upcomingBudgetTitheCol input {
+    width: auto;
+}
+
+.upcomingBudgetNotesCol input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.upcomingBudgetRow input {
+    overflow: hidden;
+}
+
+.upcomingBudgetDepositedCol > div {
+    white-space: nowrap;
+}
+
+.vueDatePicker {
+    display: inline-block;
+}
+

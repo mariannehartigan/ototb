@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
+            $table->decimal('split_expenses_minimum', 10, 2)->default(0);
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users');
             $table->timestamps();
         });

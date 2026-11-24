@@ -9,6 +9,7 @@ use App\Models\PlannedExpense;
 class GenerateBillsService
 {
     public function generateBillsArray(Carbon $date, array &$expenses): void {
+
         $startOfMonth = $date->copy()->startOfMonth();
         $endOfMonth = $date->copy()->endOfMonth();
 

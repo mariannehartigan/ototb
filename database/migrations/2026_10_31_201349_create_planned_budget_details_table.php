@@ -18,10 +18,10 @@ return new class extends Migration
             $table->text('frequency')->nullable();
             $table->decimal('amount', 12, 2)->nullable();
             $table->text('account_taken_from')->nullable();
-            $table->boolean('tithe')->default(false);
-            $table->unsignedInteger('day_due_for_monthly')->nullable();
-            $table->date('due_date_for_biweekly_quarterly_yearly_onetime')->nullable();
-            $table->date('effective_date')->default(now())->nullable();   
+            $table->string('day_of_week_for_weekly')->nullable();
+            $table->unsignedInteger('day_for_monthly')->nullable();
+            $table->date('date_for_biweekly_quarterly_yearly_onetime')->nullable();
+            // $table->date('effective_date')->default(now())->nullable();   
             $table->date('last_date_before_change')->default(now())->nullable();   
             $table->date('first_date_of_change')->default(now())->nullable();            
             $table->timestamps();

@@ -832,13 +832,12 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 1,
             'amount'        => 200,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
         \App\Models\PlannedBudgetDetail::create([
             'planned_budget_id' => 1,
             'amount'        => 150,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-11-15',
             'last_date_before_change' => '2026-11-20',
             'first_date_of_change'  => '2026-11-21'
         ]);
@@ -852,7 +851,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 2,
             'amount'        => 10,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -864,7 +863,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 3,
             'amount'        => 85,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -876,7 +875,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 3,
             'amount'        => 80,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -888,7 +887,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 4,
             'amount'        => 60,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -900,7 +899,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 5,
             'amount'        => 0,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -912,7 +911,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 6,
             'amount'        => 0,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -924,7 +923,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 7,
             'amount'        => 20,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -936,7 +935,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 8,
             'amount'        => 20,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -948,7 +947,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 9,
             'amount'        => 20,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -960,7 +959,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 10,
             'amount'        => 50,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -972,7 +971,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 11,
             'amount'        => 20,
             'frequency'     => 'weekly',
-            'effective_date'    => '2026-01-01',
+            'day_of_week_for_weekly'    => 'Friday',
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -984,8 +983,7 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 12,
             'amount'        => 630,
             'frequency'     => 'monthly',
-            'day_due_for_monthly'   => 31,
-            'effective_date'    => '2026-01-01',
+            'day_for_monthly'   => 31,
         ]);
 
         \App\Models\PlannedBudget::create([
@@ -997,8 +995,43 @@ class DatabaseSeeder extends Seeder
             'planned_budget_id' => 13,
             'amount'        => 35,
             'frequency'     => 'monthly',
-            'day_due_for_monthly'   => 31,
-            'effective_date'    => '2026-01-01',
+            'day_for_monthly'   => 31,
+        ]);
+
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Quarterly budget item',
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 13,
+            'amount'        => 35,
+            'frequency'     => 'quarterly',
+            'date_for_biweekly_quarterly_yearly_onetime'   => '2026-11-20',
+        ]);
+        
+        \App\Models\PlannedBudget::create([
+            'description'   => 'Yearly budget item',
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 13,
+            'amount'        => 36,
+            'frequency'     => 'quarterly',
+            'date_for_biweekly_quarterly_yearly_onetime'   => '2026-11-21',
+        ]);
+        
+        \App\Models\PlannedBudget::create([
+            'description'   => 'One-time budget item',
+            'notes'       => 'notes',
+            'user_id'       => 1,
+        ]);
+        \App\Models\PlannedBudgetDetail::create([
+            'planned_budget_id' => 13,
+            'amount'        => 37,
+            'frequency'     => 'quarterly',
+            'date_for_biweekly_quarterly_yearly_onetime'   => '2026-11-22',
         ]);
 
 

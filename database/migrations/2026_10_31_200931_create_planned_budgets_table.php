@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('planned_budgets', function (Blueprint $table) {
             $table->id();
             $table->text('description')->nullable();
-            $table->date('start_date')->default(now())->nullable();
-            $table->date('end_date')->nullable();            
+            // $table->date('start_date')->default(now())->nullable();
+            $table->date('end_date')->nullable();   
+            $table->boolean('tithe')->default(false);         
             $table->text('notes')->nullable();            $table->boolean('is_five_budget_month_savings')->default(false);
             $table->unsignedInteger('budget_position')->default(0);           
             $table->foreignIdFor(\App\Models\User::class, 'user_id')->references('id')->on('users'); 

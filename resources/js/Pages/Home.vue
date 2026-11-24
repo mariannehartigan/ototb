@@ -32,12 +32,12 @@
 
 <script setup>
 import { computed, markRaw, ref } from 'vue'
-import { Head, Link, usePage } from '@inertiajs/vue3'
+import { Head, usePage } from '@inertiajs/vue3'
 import Header from '../Pages/Header.vue'
 import NotLoggedIn from '../Pages/NotLoggedIn.vue'
-import UpcomingIncome from './Upcoming/UpcomingIncome.vue'
+import UpcomingIncome from './UpcomingIncome/UpcomingIncome.vue'
 import UpcomingFixedExpenses from './UpcomingFixedExpenses/UpcomingFixedExpenses.vue'
-import Budget from './Budget/Budget.vue'
+import Budget from './UpcomingBudget/UpcomingBudgets.vue'
 import Current from './Current/Current.vue'
 import History from './History.vue'
 import Assets from './Assets.vue'
@@ -58,7 +58,7 @@ const tabs = [
     component: markRaw(UpcomingFixedExpenses)
   },
   {
-    id: 'budget',
+    id: 'upcomingBudget',
     label: 'Budget',
     component: markRaw(Budget)
   },
@@ -89,5 +89,5 @@ const tabs = [
   },
 ]
 
-const activeTab = ref(tabs[3])
+const activeTab = ref(tabs[2])
 </script>
