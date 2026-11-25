@@ -133,7 +133,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 1,
-            'amount'        => 300.00,
+            'amount'        => 900.00,
             'frequency'     => 'weekly',
             'day_of_week_for_weekly'    => 'Wednesday',
             'tithe'         => true,
@@ -141,7 +141,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 1,
-            'amount'        => 250.00,
+            'amount'        => 850.00,
             'frequency'     => 'weekly',
             'day_of_week_for_weekly'    => 'Thursday',
             'tithe'         => true,
@@ -149,7 +149,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 1,
-            'amount'        => 200.00,
+            'amount'        => 800.00,
             'frequency'     => 'weekly',
             'day_of_week_for_weekly'    => 'Tuesday',
             'effective_date'    => '2027-01-01',
@@ -165,7 +165,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 2,
-            'amount'        => 300.00,
+            'amount'        => 800.00,
             'frequency'     => 'biweekly',
             'deposit_date_for_biweekly_quarterly_yearly_onetime'    => '2026-08-01',
             'effective_date'    => '2026-08-01',
@@ -173,7 +173,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 2,
-            'amount'        => 250.00,
+            'amount'        => 850.00,
             'frequency'     => 'biweekly',
             'deposit_date_for_biweekly_quarterly_yearly_onetime'    => '2026-10-01',
             'effective_date'    => '2026-10-01',
@@ -181,7 +181,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 2,
-            'amount'        => 200.00,
+            'amount'        => 900.00,
             'frequency'     => 'biweekly',
             'deposit_date_for_biweekly_quarterly_yearly_onetime'    => '2027-01-01',
             'effective_date'    => '2027-01-01',
@@ -197,7 +197,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 3,
-            'amount'        => 75.00,
+            'amount'        => 750.00,
             'frequency'     => 'monthly',
             'day_deposited_for_monthly' => '15',
             'effective_date'    => '2026-08-01',
@@ -205,7 +205,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 3,
-            'amount'        => 175.00,
+            'amount'        => 1750.00,
             'frequency'     => 'monthly',
             'day_deposited_for_monthly' => '1',
             'effective_date'    => '2026-10-01',
@@ -213,7 +213,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 3,
-            'amount'        => 275.00,
+            'amount'        => 2750.00,
             'frequency'     => 'monthly',
             'day_deposited_for_monthly' => '25',
             'effective_date'    => '2027-01-01',
@@ -229,7 +229,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 4,
-            'amount'        => 75.00,
+            'amount'        => 750.00,
             'frequency'     => 'monthly',
             'day_deposited_for_monthly' => '30',
             'effective_date'    => '2026-08-01',
@@ -237,7 +237,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 4,
-            'amount'        => 175.00,
+            'amount'        => 1750.00,
             'frequency'     => 'monthly',
             'day_deposited_for_monthly' => '20',
             'effective_date'    => '2026-10-01',
@@ -245,7 +245,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 4,
-            'amount'        => 275.00,
+            'amount'        => 2750.00,
             'frequency'     => 'monthly',
             'day_deposited_for_monthly' => '25',
             'effective_date'    => '2027-01-01',
@@ -293,7 +293,7 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\PlannedIncomeDetail::create([
             'planned_income_id' => 6,
-            'amount'        => 100.00,
+            'amount'        => 1000.00,
             'frequency' => 'yearly', 
             'deposit_date_for_biweekly_quarterly_yearly_onetime'    => '2026-08-01',
             'effective_date'    => '2026-08-01',
@@ -825,6 +825,7 @@ class DatabaseSeeder extends Seeder
          
         \App\Models\PlannedBudget::create([
             'description'   => 'Groceries',
+            'tithe'         => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);
@@ -976,6 +977,7 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\PlannedBudget::create([
             'description'   => 'Gifts',
+            'tithe'        => true,
             'notes'       => 'notes',
             'user_id'       => 1,
         ]);

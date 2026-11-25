@@ -18,7 +18,7 @@ class MakePlanService
     public function makePlan(Carbon $date): void {
         $this->insertIncomesService->insertIncomes($date);
         $expenses = $this->getExpensesService->getExpenses($date);
-        $this->addAutomaticTithesService->insertAutomaticTithes($date);
+        $this->addAutomaticTithesService->addAutomaticTithes($date, $expenses);
         $expenses = $this->initialExpenseAssignmentService->initialExpenseAssignment($date, $expenses);
         $expenses = $this->balanceExpensesService->balanceExpenses($date);
     }

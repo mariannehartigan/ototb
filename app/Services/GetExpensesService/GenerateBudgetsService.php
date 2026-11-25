@@ -297,8 +297,7 @@ private function findNumberOfBudgetsInMonth(Carbon $date): int
 } */
 
 
-private function pushBudgets(
-    Carbon $date,
+/* private function pushBudgets(Carbon $date,
     array $budgetDates,
     array &$expenses
 ): void {
@@ -448,6 +447,175 @@ private function pushBudgets(
             $currentDate->addDay();
         }
     }
+} */
+
+
+private function pushBudgets(
+    Carbon $date,
+    array $budgetDates,
+    array &$expenses
+): void {
+
+    $monthStart = $date->copy()->startOfMonth();
+    $monthEnd = $date->copy()->endOfMonth();
+
+    $plannedBudgets = \App\Models\PlannedBudget::with('plannedBudgetDetails')
+        ->where('user_id', Auth::id())
+        ->get();
+
+    // WEEKLY BUDGETS
+    // Combine all weekly budgets into one amount for each budget date.
+
+    foreach ($budgetDates as $budgetDate) {
+
+        $weeklyBudgetAmount = 0;
+        $sumOfTitheItems = 0;
+
+        foreach ($plannedBudgets as $plannedBudget) {
+
+            $detail = $plannedBudget->plannedBudgetDetails
+                ->filter(function ($detail) use ($budgetDate) {
+                    return (
+                        !$detail->first_date_of_change ||
+                        Carbon::parse($detail->first_date_of_change)->lte($budgetDate)
+                    );
+                })
+                ->sortByDesc('first_date_of_change')
+                ->first();
+
+            if ($detail?->frequency === 'weekly') {
+
+                $weeklyBudgetAmount += (float) $detail->amount;
+
+                if ($plannedBudget->tithe) {
+                    $sumOfTitheItems += (float) $detail->amount;
+                }
+            }
+        }
+
+        $expenses[] = [
+            'description' => 'Budget ' . $budgetDate->format('F j'),
+            'amount' => $weeklyBudgetAmount,
+            'sum_of_tithe_items' => $sumOfTitheItems,
+            'date' => $budgetDate->toDateString(),
+            'month_year' => $monthStart->toDateString(),
+            'day_due' => $budgetDate->day,
+            'automatic_payment' => false,
+            'account_taken_from' => 'debit',
+            'notes' => null,
+            'tithe' => false,
+            'income_id' => null,
+            'is_weekly_budget' => true,
+            'user_id' => Auth::id(),
+        ];
+    }
+
+    // MONTHLY, QUARTERLY, YEARLY AND ONE-TIME BUDGETS
+    // Add each budget individually.
+
+    foreach ($plannedBudgets as $plannedBudget) {
+
+        $currentDate = $monthStart->copy();
+
+        while ($currentDate->lte($monthEnd)) {
+
+            $detail = $plannedBudget->plannedBudgetDetails
+                ->filter(function ($detail) use ($currentDate) {
+                    return (
+                        !$detail->first_date_of_change ||
+                        Carbon::parse($detail->first_date_of_change)->lte($currentDate)
+                    );
+                })
+                ->sortByDesc('first_date_of_change')
+                ->first();
+
+            if (!$detail) {
+                $currentDate->addDay();
+                continue;
+            }
+
+            $isDue = false;
+
+            switch ($detail->frequency) {
+
+                case 'monthly':
+
+                    $day = min(
+                        $detail->day_for_monthly,
+                        $currentDate->daysInMonth
+                    );
+
+                    $isDue = $currentDate->day === $day;
+                    break;
+
+                case 'quarterly':
+                case 'yearly':
+
+                    $anchorDate = $detail->date_for_biweekly_quarterly_yearly_onetime;
+
+                    if ($anchorDate) {
+
+                        $anchor = Carbon::parse($anchorDate);
+
+                        $intervalMonths = $detail->frequency === 'quarterly'
+                            ? 3
+                            : 12;
+
+                        $monthsDifference =
+                            ($currentDate->year - $anchor->year) * 12 +
+                            ($currentDate->month - $anchor->month);
+
+                        if (
+                            $currentDate->gte($anchor) &&
+                            $monthsDifference >= 0 &&
+                            $monthsDifference % $intervalMonths === 0
+                        ) {
+                            $expectedDate = $anchor->copy()
+                                ->addMonthsNoOverflow($monthsDifference);
+
+                            $isDue = $currentDate->isSameDay($expectedDate);
+                        }
+                    }
+
+                    break;
+
+                case 'onetime':
+
+                    $anchorDate = $detail->date_for_biweekly_quarterly_yearly_onetime;
+
+                    $isDue = $anchorDate &&
+                        $currentDate->isSameDay(Carbon::parse($anchorDate));
+
+                    break;
+            }
+
+            if ($isDue) {
+
+                $expenses[] = [
+                    'description' => $plannedBudget->description,
+                    'amount' => (float) $detail->amount,
+                    'sum_of_tithe_items' => $plannedBudget->tithe
+                        ? (float) $detail->amount
+                        : 0,
+                    'date' => $currentDate->toDateString(),
+                    'month_year' => $monthStart->toDateString(),
+                    'day_due' => $currentDate->day,
+                    'automatic_payment' => false,
+                    'account_taken_from' => $detail->account_taken_from,
+                    'notes' => $plannedBudget->notes,
+                    'tithe' => (bool) $plannedBudget->tithe,
+                    'income_id' => null,
+                    'planned_budget_id' => $plannedBudget->id,
+                    'planned_budget_detail_id' => $detail->id,
+                    'is_weekly_budget' => false,
+                    'user_id' => Auth::id(),
+                ];
+            }
+
+            $currentDate->addDay();
+        }
+    }
 }
+
 
 }
